@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/Database/">
+    <Project Path="AutoTack.DataAccess/AutoTack.DataAccess.csproj" Id="a92846ef-e8b8-40a2-a12e-29aa27c2639f" />
+  </Folder>
   <Project Path="AutoTrack.Blazor/AutoTrack.Blazor.csproj" />
+  <Project Path="AutoTrack.CrossCutting/AutoTrack.CrossCutting.csproj" Id="8c8e36ef-768c-4a76-b1d0-9ec441da6f95" />
 </Solution>
