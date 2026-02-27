@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AutoTrack.Database.Access\AutoTrack.Database.Access.csproj" />
+    <ProjectReference Include="..\AutoTrack.Database.Models\AutoTrack.Database.Models.csproj" />
+  </ItemGroup>
+
 </Project>

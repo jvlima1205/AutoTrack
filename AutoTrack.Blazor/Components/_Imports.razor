@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using AutoTrack.Database.Access
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -8,3 +9,16 @@
 @using Microsoft.JSInterop
 @using AutoTrack.Blazor
 @using AutoTrack.Blazor.Components
+@using AutoTrack.Blazor.Components._Main.Layout
+
+
+@using MudBlazor;
+@inject IDialogService Dialog
+
+
+@using Microsoft.EntityFrameworkCore
+@inject DBAutoTrackContext DBAutoTrackContext
+@using AutoTrack.Database.Models
+@using AutoTrack.Database.Models.Tables
+@using AutoTrack.Database.Models.Views
+

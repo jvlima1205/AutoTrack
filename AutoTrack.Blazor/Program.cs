@@ -1,4 +1,6 @@
 using AutoTrack.Blazor.Components;
+using AutoTrack.Database.Access;
+using MudBlazor.Services;
 
 namespace AutoTrack.Blazor
 {
@@ -11,6 +13,10 @@ namespace AutoTrack.Blazor
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddDbContext<DBAutoTrackContext>();
+
+            builder.Services.AddMudServices();
 
             var app = builder.Build();
 

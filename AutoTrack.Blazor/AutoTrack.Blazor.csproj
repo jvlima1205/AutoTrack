@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="8.15.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoTrack.CrossCutting\AutoTrack.CrossCutting.csproj" />
   </ItemGroup>
 
 </Project>

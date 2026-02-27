@@ -1,0 +1,58 @@
+﻿@page "/WorkOrder/Home"
+
+
+@rendermode InteractiveServer
+
+<section class="d-flex flex-column gap-2">
+
+    <h3>Ordem de seviço</h3>
+
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Ordem de Serviço</MudButton>
+    </div>
+
+    <div>
+        <MudTable Items="@_workOrders" Hover="true" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>Número</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>Placa</MudTh>
+                <MudTh>Cliente</MudTh>
+                <MudTh>Criado Em</MudTh>
+                <MudTh>Data Prometida</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Number</MudTd>
+                <MudTd>@context.Status</MudTd>
+                <MudTd>@context.Plate</MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.CreatAt</MudTd>
+                <MudTd>@context.PromisedDate</MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+
+</section>
+
+
+
+@code {
+
+    private List<vwWorkOrder> _workOrders = new List<vwWorkOrder>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _workOrders = await DBAutoTrackContext.vwWorkOrder.ToListAsync();
+    }
+
+    private async Task Add()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        await Dialog.ShowAsync<AddWorkOrder>("AddWorkOrder", options);
+    }
+
+}

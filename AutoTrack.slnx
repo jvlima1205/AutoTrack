@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Database/">
-    <Project Path="AutoTack.DataAccess/AutoTack.DataAccess.csproj" Id="a92846ef-e8b8-40a2-a12e-29aa27c2639f" />
+    <Project Path="AutoTrack.Database.Access/AutoTrack.Database.Access.csproj" Id="a55a57c6-9c90-49f0-9078-d19987ba9a81" />
+    <Project Path="AutoTrack.Database.Models/AutoTrack.Database.Models.csproj" Id="50e61337-46f7-43e5-b51b-78edad8d1055" />
   </Folder>
   <Project Path="AutoTrack.Blazor/AutoTrack.Blazor.csproj" />
   <Project Path="AutoTrack.CrossCutting/AutoTrack.CrossCutting.csproj" Id="8c8e36ef-768c-4a76-b1d0-9ec441da6f95" />
