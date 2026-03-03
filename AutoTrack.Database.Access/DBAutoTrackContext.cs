@@ -30,6 +30,7 @@ public class DBAutoTrackContext : DbContext
 
     public DbSet<tVehicle> tVehicle { get; set; }
     public DbSet<tClient> tClient { get; set; }
+    public DbSet<tVehicleBrand> tVehicleBrand { get; set; }
 
 
 

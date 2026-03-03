@@ -1,0 +1,61 @@
+﻿<MudDialog TitleClass="bg-success text-white">
+    <TitleContent>
+        <h3>Adicionar Veículo</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2">
+
+            <MudSelect @bind-Value="@_brand">
+                @foreach (tVehicleBrand brand in _brands)
+                {
+                    <MudSelectItem Value="brand.IdVehicleBrand">@brand.Brand</MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudTextField For="@(() => form.Vehicle)" Label="Modelo do Veículo" />
+
+            <MudNumericField For="@(() => form.YearManufacture)" Label="Ano de Fabricação" />
+
+            <MudNumericField For="@(() => form.YearModel)" Label="Ano do Modelo" />
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    public vwVehicle form { get; set; } = new();
+
+    private tVehicleBrand _brand { get; set; } = new();
+    private List<tVehicleBrand> _brands { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+    }
+
+    private void Submit()
+    {
+        tVehicle vehicle = new()
+        {
+            IdVehicleBrand = _brand.IdVehicleBrand,
+            Vehicle = form.Vehicle,
+            YearManufacture = form.YearManufacture,
+            YearModel = form.YearModel
+        };
+
+        DBAutoTrackContext.tVehicle.Add(vehicle);
+        DBAutoTrackContext.SaveChanges();
+
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

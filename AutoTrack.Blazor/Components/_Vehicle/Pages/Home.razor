@@ -1,0 +1,51 @@
+﻿@page "/Vehicle/Home"
+@rendermode InteractiveServer
+
+<section class="d-flex flex-column gap-3">
+
+    <h3>Lista de Veículos</h3>
+
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Veículo</MudButton>
+    </div>
+
+    <div>
+        <MudTable Items="@_vehicles" Hover="true" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>Marca</MudTh>
+                <MudTh>Veículo</MudTh>
+                <MudTh>Ano de Fabricação</MudTh>
+                <MudTh>Ano do Modelo</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Brand</MudTd>
+                <MudTd>@context.Vehicle</MudTd>
+                <MudTd>@context.YearManufacture</MudTd>
+                <MudTd>@context.YearModel</MudTd>
+ 
+                <MudTd>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+
+</section>
+
+
+
+@code {
+
+    private List<vwVehicle> _vehicles = new List<vwVehicle>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _vehicles = await DBAutoTrackContext.vwVehicle.ToListAsync();
+    }
+
+    private async Task Add()
+    {
+        await Dialog.ShowAsync<AddVehicle>("AddVehicle");
+    }
+
+}

@@ -1,0 +1,35 @@
+﻿<MudDialog TitleClass="bg-success text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Adicionar Marca</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2">
+            <MudTextField For="@(() => form.Brand)" @bind-Value="form.Brand" Label="Marca do Veículo" Variant="Variant.Outlined" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    public tVehicleBrand form { get; set; } = new();
+
+
+    private void Submit()
+    {
+        // DBAutoTrackContext.tVehicleBrand.Add(form);
+        // DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

@@ -1,0 +1,51 @@
+﻿@page "/VehicleBrand/Home"
+@rendermode InteractiveServer
+
+<section class="d-flex flex-column gap-3">
+
+    <h3>Lista de Marcas</h3>
+
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Marca</MudButton>
+    </div>
+
+    <div>
+        <MudTable Items="@_brands" Hover="true" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>Marca</MudTh>
+                <MudTh>Ações</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Brand</MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+
+</section>
+
+
+
+@code {
+
+    private List<tVehicleBrand> _brands = new List<tVehicleBrand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+    }
+
+    private async Task Add()
+    {
+        var dialog = await Dialog.ShowAsync<AddVehicleBrand>("AddVehicleBrand");
+
+        StateHasChanged();
+
+        var teste = dialog.Result;
+
+
+    }
+
+}

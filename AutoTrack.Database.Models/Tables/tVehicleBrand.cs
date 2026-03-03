@@ -7,6 +7,5 @@ public class tVehicleBrand
 {
     [Key]
     public int IdVehicleBrand { get; set; }
-
     public string Brand { get; set; }
 }

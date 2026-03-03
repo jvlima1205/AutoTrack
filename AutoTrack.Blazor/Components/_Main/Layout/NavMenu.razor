@@ -1,6 +1,11 @@
-﻿
+﻿@rendermode InteractiveServer
+
 <MudAppBar Color="Color.Dark" Fixed="false">
     <div class="d-flex flex-row gap-3">
         <MudButton Href="WorkOrder/Home" Variant="Variant.Filled" Color="Color.Dark">Ordem de Serviço</MudButton>
+        <MudMenu Label="Veículos" Variant="Variant.Filled" Color="Color.Dark">
+            <MudMenuItem Label="Cadastro de Veículos" Href="Vehicle/Home" />
+            <MudMenuItem Label="Cadastro de Marca" Href="VehicleBrand/Home" />
+        </MudMenu>
     </div>
 </MudAppBar>
