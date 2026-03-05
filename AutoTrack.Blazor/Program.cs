@@ -1,3 +1,4 @@
+using AutoTrack.Blazor.Classes;
 using AutoTrack.Blazor.Components;
 using AutoTrack.Database.Access;
 using MudBlazor.Services;
@@ -17,6 +18,8 @@ namespace AutoTrack.Blazor
             builder.Services.AddDbContext<DBAutoTrackContext>();
 
             builder.Services.AddMudServices();
+
+            builder.Services.AddScoped<SnackBarService>();
 
             var app = builder.Build();
 

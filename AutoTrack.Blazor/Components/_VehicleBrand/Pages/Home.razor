@@ -11,6 +11,10 @@
 
     <div>
         <MudTable Items="@_brands" Hover="true" Breakpoint="Breakpoint.Sm">
+            <ColGroup>
+                <col style="width: 80%;" />
+                <col />
+            </ColGroup>
             <HeaderContent>
                 <MudTh>Marca</MudTh>
                 <MudTh>Ações</MudTh>
@@ -18,7 +22,8 @@
             <RowTemplate>
                 <MudTd>@context.Brand</MudTd>
                 <MudTd>
-                    <MudButton Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -34,18 +39,58 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
         _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
     }
 
     private async Task Add()
     {
         var dialog = await Dialog.ShowAsync<AddVehicleBrand>("AddVehicleBrand");
+        var result = await dialog.Result;
 
-        StateHasChanged();
+        if (!result.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessAdd();
+        }
+    }
 
-        var teste = dialog.Result;
+    private async Task Edit(tVehicleBrand brand)
+    {
+        var parameters = new DialogParameters<EditVehicleBrand>
+        {
+            { x => x.form, brand }
+        };
 
+        var dialog = await Dialog.ShowAsync<EditVehicleBrand>("EditVehicleBrand", parameters);
+        var result = await dialog.Result;
 
+        if (!result.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessEdit();
+        }
+    }
+
+    private async Task Delete(tVehicleBrand brand)
+    {
+        var parameters = new DialogParameters<DeleteVehicleBrand>
+        {
+            { x => x.form, brand }
+        };
+
+        var dialog = await Dialog.ShowAsync<DeleteVehicleBrand>("DeleteVehicleBrand", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessDelete();
+        }
     }
 
 }

@@ -1,15 +1,15 @@
-﻿<MudDialog TitleClass="bg-success text-white" ContentClass="py-5">
+﻿<MudDialog TitleClass="bg-danger text-white" ContentClass="py-5">
     <TitleContent>
-        <h3>Adicionar Marca</h3>
+        <h3>Deletar Marca</h3>
     </TitleContent>
     <DialogContent>
         <MudForm Model="@form" Spacing="2">
-            <MudTextField For="@(() => form.Brand)" @bind-Value="form.Brand" Label="Marca do Veículo" Variant="Variant.Outlined" />
+            <MudTextField For="@(() => form.Brand)" @bind-Value="form.Brand" Label="Marca do Veículo" Variant="Variant.Outlined" ReadOnly="true" />
         </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Adicionar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Submit">Deletar</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -17,12 +17,15 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
     public tVehicleBrand form { get; set; } = new();
-
 
     private void Submit()
     {
-        DBAutoTrackContext.tVehicleBrand.Add(form);
+        tVehicleBrand? brand = DBAutoTrackContext.tVehicleBrand.Find(form.IdVehicleBrand);
+        if (brand is null) Cancel();
+
+        DBAutoTrackContext.tVehicleBrand.Remove(brand!);
         DBAutoTrackContext.SaveChanges();
 
         MudDialog.Close(DialogResult.Ok(true));
