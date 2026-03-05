@@ -12,12 +12,14 @@
 @using AutoTrack.Blazor.Components._Main.Layout
 @using AutoTrack.Blazor.Classes;
 
+@inject NavigationManager Nav
+
 @using MudBlazor;
 @inject IDialogService Dialog
 @inject SnackBarService Snack;
 
-@using Microsoft.EntityFrameworkCore
 @inject DBAutoTrackContext DBAutoTrackContext
+@using Microsoft.EntityFrameworkCore
 @using AutoTrack.Database.Models
 @using AutoTrack.Database.Models.Tables
 @using AutoTrack.Database.Models.Views

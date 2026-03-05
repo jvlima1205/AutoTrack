@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace AutoTrack.Database.Models.Tables;
+namespace AutoTrack.Database.Models.Views;
 
-public class tClient
+[Keyless]
+public class vwVehicleClient
 {
-    [Key]
     public int IdClient { get; set; }
 
     public string Name { get; set; } = string.Empty;
@@ -24,4 +24,21 @@ public class tClient
     public string Contact { get; set; } = string.Empty;
 
     public string? ContactAux { get; set; }
+
+    public int IdVehicleClient { get; set; }
+
+    public int IdVehicle { get; set; }
+
+    public int IdVehicleBrand { get; set; }
+
+    public string Brand { get; set; } = string.Empty;
+
+    public string Vehicle { get; set; } = string.Empty;
+
+    public string Plate { get; set; } = string.Empty;
+
+    public int YearManufacture { get; set; }
+
+    public int YearModel { get; set; }
+
 }

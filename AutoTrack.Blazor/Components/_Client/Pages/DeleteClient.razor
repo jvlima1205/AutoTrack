@@ -1,0 +1,56 @@
+﻿<MudDialog TitleClass="bg-danger text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Deletar Cliente</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
+
+            <div class="d-flex flex-row">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Name)" Label="Nome" @bind-Value="form.Name" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Address)" Label="Endereço" @bind-Value="form.Address" ReadOnly="true" />
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.HouseNumber)" Label="N°" @bind-Value="form.HouseNumber" ReadOnly="true" />
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.District)" Label="Bairro" @bind-Value="form.District" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.City)" Label="Cidade" @bind-Value="form.City" ReadOnly="true" />
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.State)" Label="Estado" @bind-Value="form.State" ReadOnly="true" />
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.CEP)" Label="CEP" @bind-Value="form.CEP" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Contact)" Label="Contato" @bind-Value="form.Contact" ReadOnly="true" />
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.ContactAux)" Label="Contato Auxiliar" @bind-Value="form.ContactAux" ReadOnly="true" />
+            </div>
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Submit">Deletar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public tClient form { get; set; } = new();
+
+    private void Submit()
+    {
+        tClient? client = DBAutoTrackContext.tClient.Find(form.IdClient);
+        if (client is null) Cancel();
+
+        DBAutoTrackContext.tClient.Remove(client!);
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

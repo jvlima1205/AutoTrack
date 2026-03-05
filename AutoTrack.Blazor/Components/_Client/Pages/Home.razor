@@ -1,30 +1,34 @@
-﻿@page "/Vehicle/Home"
+﻿@page "/Client/Home"
 @rendermode InteractiveServer
 
 <section class="d-flex flex-column gap-3">
 
-    <h3>Lista de Veículos</h3>
+    <h3>Lista de Clientes</h3>
 
     <div>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Veículo</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Cliente</MudButton>
     </div>
 
     <div>
-        <MudTable Items="@_vehicles" Hover="true" Breakpoint="Breakpoint.Sm">
+        <MudTable Items="@_clients" Hover="true" Breakpoint="Breakpoint.Sm">
             <ColGroup>
-                <col  />
-                <col  />
+                <col />
+                <col />
+                <col />
                 <col style="width: 20%;" />
             </ColGroup>
             <HeaderContent>
-                <MudTh>Marca</MudTh>
-                <MudTh>Veículo</MudTh>
+                <MudTh>Nome</MudTh>
+                <MudTh>Contato</MudTh>
+                <MudTh>Contato Auxiliar</MudTh>
                 <MudTh>Ações</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd>@context.Brand</MudTd>
-                <MudTd>@context.Vehicle</MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Contact</MudTd>
+                <MudTd>@context.ContactAux</MudTd>
                 <MudTd>
+                    <MudButton Href="@($"VehicleClient/Home/{context.IdClient}")" Variant="Variant.Outlined" Color="Color.Info">Veículos</MudButton>
                     <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
                     <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
                 </MudTd>
@@ -38,7 +42,7 @@
 
 @code {
 
-    private List<vwVehicle> _vehicles = new List<vwVehicle>();
+    private List<tClient> _clients = new List<tClient>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,12 +51,12 @@
 
     private async Task UpdateData()
     {
-        _vehicles = await DBAutoTrackContext.vwVehicle.ToListAsync();
+        _clients = await DBAutoTrackContext.tClient.ToListAsync();
     }
 
     private async Task Add()
     {
-        var dialog = await Dialog.ShowAsync<AddVehicle>("AddVehicle");
+        var dialog = await Dialog.ShowAsync<AddClient>("AddClient");
         var result = await dialog.Result;
 
         if (!result!.Canceled)
@@ -62,14 +66,14 @@
         }
     }
 
-    private async Task Edit(vwVehicle vehicle)
+    private async Task Edit(tClient client)
     {
-        var parameters = new DialogParameters<EditVehicle>
+        var parameters = new DialogParameters<EditClient>
         {
-            { x => x.form, vehicle }
+            { x => x.form, client }
         };
 
-        var dialog = await Dialog.ShowAsync<EditVehicle>("EditVehicle", parameters);
+        var dialog = await Dialog.ShowAsync<EditClient>("EditClient", parameters);
         var result = await dialog.Result;
 
         if (!result!.Canceled)
@@ -79,14 +83,14 @@
         }
     }
 
-    private async Task Delete(vwVehicle vehicle)
+    private async Task Delete(tClient client)
     {
-        var parameters = new DialogParameters<DeleteVehicle>
+        var parameters = new DialogParameters<DeleteClient>
         {
-            { x => x.form, vehicle }
+            { x => x.form, client }
         };
 
-        var dialog = await Dialog.ShowAsync<DeleteVehicle>("DeleteVehicle", parameters);
+        var dialog = await Dialog.ShowAsync<DeleteClient>("DeleteClient", parameters);
         var result = await dialog.Result;
 
         if (!result!.Canceled)

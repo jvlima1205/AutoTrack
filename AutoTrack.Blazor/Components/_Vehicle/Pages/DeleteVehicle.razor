@@ -1,0 +1,39 @@
+﻿<MudDialog TitleClass="bg-danger text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Deletar Veículo</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2">
+
+            <MudTextField Variant="Variant.Outlined" For="@(() => form.Brand)" Label="Marca" ReadOnly="true" @bind-Value="form.Brand" />
+
+            <MudTextField Variant="Variant.Outlined" For="@(() => form.Vehicle)" Label="Modelo" ReadOnly="true" @bind-Value="form.Vehicle" />
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Submit">Deletar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public vwVehicle form { get; set; } = new();
+
+    private void Submit()
+    {
+        tVehicle? vehicle = DBAutoTrackContext.tVehicle.Find(form.IdVehicle);
+        if (vehicle is null) Cancel();
+
+        DBAutoTrackContext.tVehicle.Remove(vehicle!);
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

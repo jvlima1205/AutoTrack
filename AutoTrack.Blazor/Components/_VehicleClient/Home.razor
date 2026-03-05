@@ -1,0 +1,148 @@
+﻿@page "/VehicleClient/Home/{IdClient:int}"
+@rendermode InteractiveServer
+
+<section class="d-flex flex-column gap-3">
+
+    <h3>Lista de Veículos do Cliente: @_client!.Name</h3>
+
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Veículo</MudButton>
+    </div>
+
+    <div>
+        <MudTable Items="@_vehicles" Hover="true" Breakpoint="Breakpoint.Sm">
+            <ColGroup>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col style="width: 20%;" />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh>Marca</MudTh>
+                <MudTh>Veículo</MudTh>
+                <MudTh>Placa</MudTh>
+                <MudTh>Ano de Fabricação</MudTh>
+                <MudTh>Ano do Modelo</MudTh>
+                <MudTh>Ações</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Brand</MudTd>
+                <MudTd>@context.Vehicle</MudTd>
+                <MudTd>@context.Plate</MudTd>
+                <MudTd>@context.YearManufacture</MudTd>
+                <MudTd>@context.YearModel</MudTd>
+                <MudTd>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+
+</section>
+
+
+
+@code {
+
+    [Parameter]
+    public int IdClient { get; set; }
+
+    private tClient? _client { get; set; } = new();
+
+    private vwVehicleClient? _vehicleClient { get; set; } = new();
+
+    private List<vwVehicleClient> _vehicles = new List<vwVehicleClient>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IdClient < 0)
+        {
+            Nav.NavigateTo("/Error");
+            return;
+        }
+
+        _client = await DBAutoTrackContext.tClient.FindAsync(IdClient);
+
+        _vehicleClient = await DBAutoTrackContext.vwVehicleClient.FirstOrDefaultAsync(x => x.IdClient == IdClient);
+
+        if (_vehicleClient is null)
+        {
+            _vehicleClient = new vwVehicleClient()
+            {
+                IdClient = _client!.IdClient,
+                Name = _client.Name,
+                Address = _client.Address,
+                HouseNumber = _client.HouseNumber,
+                District = _client.District,
+                City = _client.City,
+                State = _client.State,
+                CEP = _client.CEP,
+                Contact = _client.Contact,
+                ContactAux = _client.ContactAux,
+            };
+            return;
+        }
+
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
+        _vehicles = await DBAutoTrackContext.vwVehicleClient.Where(x => x.IdClient == _client!.IdClient).ToListAsync();
+    }
+
+    private async Task Add()
+    {
+        var parameters = new DialogParameters<AddVehicleClient>
+        {
+            { x => x.form, _vehicleClient }
+        };
+
+        var dialog = await Dialog.ShowAsync<AddVehicleClient>("AddVehicleClient", parameters);
+        var result = await dialog.Result;
+
+        if (!result!.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessAdd();
+        }
+    }
+
+    private async Task Edit(vwVehicleClient vehicle)
+    {
+        // var parameters = new DialogParameters<EditVehicle>
+        // {
+        //     { x => x.form, vehicle }
+        // };
+
+        // var dialog = await Dialog.ShowAsync<EditVehicle>("EditVehicle", parameters);
+        // var result = await dialog.Result;
+
+        // if (!result!.Canceled)
+        // {
+        //     await UpdateData();
+        //     Snack.SuccessEdit();
+        // }
+    }
+
+    private async Task Delete(vwVehicleClient vehicle)
+    {
+        // var parameters = new DialogParameters<DeleteVehicle>
+        // {
+        //     { x => x.form, vehicle }
+        // };
+
+        // var dialog = await Dialog.ShowAsync<DeleteVehicle>("DeleteVehicle", parameters);
+        // var result = await dialog.Result;
+
+        // if (!result!.Canceled)
+        // {
+        //     await UpdateData();
+        //     Snack.SuccessDelete();
+        // }
+    }
+
+}
