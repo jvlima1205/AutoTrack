@@ -3,7 +3,12 @@
 
 <section class="d-flex flex-column gap-3">
 
-    <h3>Lista de Veículos do Cliente: @_client!.Name</h3>
+    <div class="d-flex flex-column gap-3">
+        <div>
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.KeyboardBackspace" Color="Color.Dark" Href="Client/Home">Voltar</MudButton>
+        </div>
+        <h3>Lista de Veículos do Cliente: <ins>@_client!.Name</ins></h3>
+    </div>
 
     <div>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Veículo</MudButton>

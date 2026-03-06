@@ -11,23 +11,32 @@
 
     <div>
         <MudTable Items="@_workOrders" Hover="true" Breakpoint="Breakpoint.Sm">
+            <ColGroup>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col style="width: 20%;" />
+            </ColGroup>
             <HeaderContent>
                 <MudTh>Número</MudTh>
                 <MudTh>Status</MudTh>
-                <MudTh>Placa</MudTh>
                 <MudTh>Cliente</MudTh>
+                <MudTh>Placa</MudTh>
                 <MudTh>Criado Em</MudTh>
                 <MudTh>Data Prometida</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd>@context.Number</MudTd>
                 <MudTd>@context.Status</MudTd>
-                <MudTd>@context.Plate</MudTd>
                 <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Plate</MudTd>
                 <MudTd>@context.CreatAt</MudTd>
                 <MudTd>@context.PromisedDate</MudTd>
                 <MudTd>
-                    <MudButton Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
@@ -43,14 +52,59 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
         _workOrders = await DBAutoTrackContext.vwWorkOrder.ToListAsync();
+
     }
 
     private async Task Add()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = await Dialog.ShowAsync<AddWorkOrder>("AddWorkOrder");
+        var result = await dialog.Result;
 
-        await Dialog.ShowAsync<AddWorkOrder>("AddWorkOrder", options);
+        if (!result!.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessAdd();
+        }
+    }
+
+    private async Task Edit(vwWorkOrder workOrder)
+    {
+        var parameters = new DialogParameters<EditWorkOrder>
+        {
+            { x => x.form, workOrder }
+        };
+
+        var dialog = await Dialog.ShowAsync<EditWorkOrder>("EditWorkOrder", parameters);
+        var result = await dialog.Result;
+
+        if (!result!.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessEdit();
+        }
+    }
+
+    private async Task Delete(vwWorkOrder workOrder)
+    {
+        var parameters = new DialogParameters<DeleteWorkOrder>
+        {
+            { x => x.form, workOrder }
+        };
+
+        var dialog = await Dialog.ShowAsync<DeleteWorkOrder>("DeleteWorkOrder", parameters);
+        var result = await dialog.Result;
+
+        if (!result!.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessDelete();
+        }
     }
 
 }

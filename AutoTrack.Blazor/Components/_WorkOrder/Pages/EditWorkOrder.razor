@@ -1,0 +1,190 @@
+﻿<MudDialog TitleClass="bg-warning text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Editar Ordem de Serviço</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
+
+            <MudTextField For="@(() => form.Number)" Variant="Variant.Outlined" @bind-Value="form.Number" Label="N° de Serviço" Required="true" RequiredError="Número do serviço obrigatório" />
+
+            <MudSelect T="int?" Value="@_idClient" ValueChanged="OnClientChange" Variant="Variant.Outlined" Label="Cliente" Required="true" RequiredError="Obrigatório selecionar um cliente">
+                @foreach (tClient client in _clients)
+                {
+                    <MudSelectItem Value="@((int?)client.IdClient)">@client.Name</MudSelectItem>
+                }
+            </MudSelect>
+
+            <div class="d-flex flex-row gap-3">
+                <MudSelect T="int?" Value="@_idBrand" ValueChanged="OnBrandChange" Variant="Variant.Outlined" Label="Modelo" Disabled="!_clientSelect">
+                    @if (_clients.Any())
+                        @foreach (tVehicleBrand brand in _brands)
+                        {
+                            <MudSelectItem Value="@((int?)brand.IdVehicleBrand)">@brand.Brand</MudSelectItem>
+                        }
+                </MudSelect>
+
+                <MudSelect T="int?" Value="@_idVehicle" ValueChanged="OnVehicleChange" Variant="Variant.Outlined" Label="Marca" Disabled="!_brandSelect">
+                    @if (_brands.Any())
+                        @foreach (vwVehicle vehicle in _vehicles)
+                        {
+                            <MudSelectItem Value="@((int?)vehicle.IdVehicle)">@vehicle.Vehicle</MudSelectItem>
+                        }
+                </MudSelect>
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => _plate)" Label="Placa" @bind-Value="_plate" ReadOnly="true" />
+                <MudNumericField Variant="Variant.Outlined" For="@(() => _yearManufacture)" Label="Ano de Fabricação" @bind-Value="_yearManufacture" ReadOnly="true" />
+                <MudNumericField Variant="Variant.Outlined" For="@(() => _yearModel)" Label="Ano do Modelo" @bind-Value="_yearModel" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudSelect @bind-Value="_idStatus" Variant="Variant.Outlined" Label="Status">
+                    @foreach (tStatus status in _statuses)
+                    {
+                        <MudSelectItem Value="status.IdStatus">@status.Status</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudDatePicker Label="Data Prometida" @bind-Date="_promisedDate" Variant="Variant.Outlined" Color="Color.Dark" />
+            </div>
+
+            <MudTextField T="string" Label="Descrição" Variant="Variant.Outlined" Lines="4" @bind-value="@form.Description" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Salvar Alterações</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public vwWorkOrder form { get; set; } = new();
+
+    private DateTime? _promisedDate = DateTime.Now;
+
+    private bool _clientSelect = false;
+    private int? _idClient = null;
+    private List<tClient> _clients = [];
+
+    private bool _brandSelect = false;
+    private int? _idBrand = null;
+    private List<tVehicleBrand> _brands = [];
+
+    private int? _idVehicle = null;
+    private List<vwVehicle> _vehicles = [];
+
+    private vwVehicleClient _vehicleClient = new();
+    private List<vwVehicleClient> _vehicleClients = new();
+
+    private int _idStatus = 0;
+    private List<tStatus> _statuses = [];
+
+    private string _plate = string.Empty;
+    private int _yearManufacture = 0;
+    private int _yearModel = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _clients = await DBAutoTrackContext.tClient.ToListAsync();
+
+        _statuses = await DBAutoTrackContext.tStatus.ToListAsync();
+        if (_statuses.Any())
+            _idStatus = _statuses.First().IdStatus;
+
+        OnClientChange(form.IdClient);
+        OnBrandChange(form.IdVehicleBrand);
+        OnVehicleChange(form.IdVehicle);
+
+        _idStatus = form.IdStatus;
+        _promisedDate = form.PromisedDate;
+    }
+
+    private void OnClientChange(int? idClient)
+    {
+        if (idClient is null) return;
+
+        _idClient = idClient;
+        _vehicleClients = DBAutoTrackContext.vwVehicleClient.Where(x => x.IdClient == idClient).ToList();
+
+        _brands = _vehicleClients.Select(x => new tVehicleBrand
+        {
+            IdVehicleBrand = x.IdVehicleBrand,
+            Brand = x.Brand,
+        }).ToList();
+
+        _clientSelect = true;
+        _idVehicle = null;
+        _idBrand = null;
+    }
+
+    private void OnBrandChange(int? idBrand)
+    {
+        ResetDataVehicle();
+        if (idBrand is null) return;
+        _idBrand = idBrand;
+
+        _vehicles = _vehicleClients.Where(x => x.IdVehicleBrand == idBrand).Select(x => new vwVehicle
+        {
+            IdVehicle = x.IdVehicle,
+            IdVehicleBrand = x.IdVehicleBrand,
+            Vehicle = x.Vehicle,
+            Brand = x.Brand,
+        }).ToList();
+
+        _brandSelect = true;
+        _idVehicle = null;
+    }
+
+    private void OnVehicleChange(int? idVehicle)
+    {
+        if (idVehicle is null) return;
+        _idVehicle = idVehicle;
+
+        _vehicleClient = _vehicleClients.FirstOrDefault(x => x.IdVehicle == idVehicle)!;
+
+        _plate = _vehicleClient.Plate;
+        _yearManufacture = _vehicleClient.YearManufacture;
+        _yearModel = _vehicleClient.YearModel;
+    }
+
+    private void ResetDataVehicle()
+    {
+        _plate = string.Empty;
+        _yearManufacture = 0;
+        _yearModel = 0;
+    }
+
+    private void Submit()
+    {
+        tWorkOrder? workOrder = DBAutoTrackContext.tWorkOrder.Find(form.IdWorkOrder);
+        if (workOrder is null) Cancel();
+
+        if (workOrder!.IdStatus != _idStatus)
+            workOrder.IdStatus = _idStatus;
+
+        if (workOrder.Number != form.Number)
+            workOrder.Number = form.Number;
+
+        if (workOrder.Description != form.Description)
+            workOrder.Description = form.Description;
+
+        if (workOrder.PromisedDate != _promisedDate)
+            workOrder.PromisedDate = (DateTime)_promisedDate!;
+
+        if (workOrder.IdVehicleClient != _vehicleClient.IdVehicleClient)
+            workOrder.IdVehicleClient = _vehicleClient.IdVehicleClient;
+
+
+        DBAutoTrackContext.Entry(workOrder).State = EntityState.Modified;
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

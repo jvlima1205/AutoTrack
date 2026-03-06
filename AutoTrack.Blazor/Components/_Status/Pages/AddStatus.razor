@@ -1,0 +1,38 @@
+﻿<MudDialog TitleClass="bg-success text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Adicionar Status</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2">
+            <MudTextField Variant="Variant.Outlined" For="@(() => form.Status)" Label="Nome do Status" @bind-Value="form.Status" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Adicionar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    public tStatus form { get; set; } = new();
+
+
+    private void Submit()
+    {
+        tStatus status = new()
+        {
+            Status = form.Status
+        };
+
+        DBAutoTrackContext.tStatus.Add(status);
+        DBAutoTrackContext.SaveChanges();
+
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

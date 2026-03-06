@@ -1,0 +1,64 @@
+﻿<MudDialog TitleClass="bg-danger text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Deletar Ordem de Serviço</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
+
+            <MudTextField For="@(() => form.Number)" Variant="Variant.Outlined" @bind-Value="form.Number" Label="N° de Serviço" ReadOnly="true" />
+
+            <MudTextField For="@(() => form.Name)" Variant="Variant.Outlined" @bind-Value="form.Name" Label="Cliente" ReadOnly="true" />
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField For="@(() => form.Brand)" Variant="Variant.Outlined" @bind-Value="form.Brand" Label="Modelo" ReadOnly="true" />
+                <MudTextField For="@(() => form.Vehicle)" Variant="Variant.Outlined" @bind-Value="form.Vehicle" Label="Marca" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField For="@(() => form.Plate)" Variant="Variant.Outlined" @bind-Value="form.Plate" Label="Placa" ReadOnly="true" />
+                <MudTextField For="@(() => form.YearManufacture)" Variant="Variant.Outlined" @bind-Value="form.YearManufacture" Label="Ano de Fabricação" ReadOnly="true" />
+                <MudTextField For="@(() => form.YearModel)" Variant="Variant.Outlined" @bind-Value="form.YearModel" Label="Ano do Modelo" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField For="@(() => form.Status)" Variant="Variant.Outlined" @bind-Value="form.Status" Label="Status" ReadOnly="true" />
+                <MudDatePicker Label="Data Prometida" @bind-Date="_promisedDate" Variant="Variant.Outlined" Color="Color.Dark" ReadOnly="true" />
+            </div>
+
+            <MudTextField T="string" Label="Descrição" Variant="Variant.Outlined" Lines="4" @bind-value="@form.Description" ReadOnly="true" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Submit">Deletar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public vwWorkOrder form { get; set; } = new();
+
+    private DateTime? _promisedDate = DateTime.Now;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _promisedDate = form.PromisedDate;
+    }
+
+    private void Submit()
+    {
+        tWorkOrder? workOrder = DBAutoTrackContext.tWorkOrder.Find(form.IdWorkOrder);
+        if (workOrder is null) Cancel();
+
+        DBAutoTrackContext.tWorkOrder.Remove(workOrder!);
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

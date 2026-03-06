@@ -10,18 +10,18 @@
             </div>
 
             <div class="d-flex flex-row gap-3">
-                <MudSelect T="int" Variant="Variant.Outlined" Label="Marca" Value="@_idBrand" ValueChanged="OnChange" Required="true" RequiredError="Modelo obrigatório">
+                <MudSelect T="int?" Variant="Variant.Outlined" Label="Marca" Value="@_idBrand" ValueChanged="OnChange" Required="true" RequiredError="Modelo obrigatório">
                     @foreach (tVehicleBrand brand in _brands)
                     {
-                        <MudSelectItem Value="brand.IdVehicleBrand">@brand.Brand</MudSelectItem>
+                        <MudSelectItem Value="@((int?)brand.IdVehicleBrand)">@brand.Brand</MudSelectItem>
                     }
                 </MudSelect>
 
-                <MudSelect T="int" Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect" Required="true" RequiredError="Nome obrigatório">
+                <MudSelect Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect" Required="true" RequiredError="Marca obrigatória">
                     @if (_vehicles.Any())
                         @foreach (tVehicle vehicle in _vehicles)
                         {
-                            <MudSelectItem Value="vehicle.IdVehicle">@vehicle.Vehicle</MudSelectItem>
+                            <MudSelectItem Value="@((int?)vehicle.IdVehicle)">@vehicle.Vehicle</MudSelectItem>
                         }
                 </MudSelect>
             </div>
@@ -51,31 +51,28 @@
     [Parameter]
     public vwVehicleClient form { get; set; } = new();
 
-    private int _idBrand = 0;
+    private bool _brandSelect = false;
+    private int? _idBrand = null;
     private List<tVehicleBrand> _brands { get; set; } = [];
 
-    private bool _brandSelect = false;
 
-    private int _idVehicle = 0;
+    private int? _idVehicle = null;
     private List<tVehicle> _vehicles { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
     {
         _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
-        if (!_brands.Any()) return;
-
-        _idBrand = _brands.First().IdVehicleBrand;
-        await OnChange(_idBrand);
+        form.Plate = string.Empty;
+        form.YearManufacture = 0;
+        form.YearModel = 0;
     }
 
-    private async Task OnChange(int idBrand)
+    private async Task OnChange(int? idBrand)
     {
         _idBrand = idBrand;
         _brandSelect = true;
 
         _vehicles = await DBAutoTrackContext.tVehicle.Where(x => x.IdVehicleBrand == idBrand).ToListAsync();
-        if (_vehicles.Any())
-            _idVehicle = _vehicles.First().IdVehicle;
 
         StateHasChanged();
     }
@@ -84,7 +81,7 @@
     {
         tVehicleClient vehicleClient = new()
         {
-            IdVehicle = _idVehicle,
+            IdVehicle = (int)_idVehicle!,
             IdClient = form.IdClient,
             Plate = form.Plate,
             YearManufacture = form.YearManufacture,

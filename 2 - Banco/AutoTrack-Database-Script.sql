@@ -1,12 +1,12 @@
 USE [master]
 GO
-/****** Object:  Database [DBAutoTrack]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  Database [DBAutoTrack]    Script Date: 06/03/2026 14:10:05 ******/
 CREATE DATABASE [DBAutoTrack]
  CONTAINMENT = NONE
  ON  PRIMARY 
 ( NAME = N'DBAutoTrack', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DBAutoTrack.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
  LOG ON 
-( NAME = N'DBAutoTrack_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DBAutoTrack_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+( NAME = N'DBAutoTrack_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\DBAutoTrack_log.ldf' , SIZE = 73728KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
  WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
 GO
 ALTER DATABASE [DBAutoTrack] SET COMPATIBILITY_LEVEL = 160
@@ -84,59 +84,22 @@ ALTER DATABASE [DBAutoTrack] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEAN
 GO
 USE [DBAutoTrack]
 GO
-/****** Object:  Table [dbo].[tWorkOrder]    Script Date: 27/02/2026 17:05:29 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[tWorkOrder](
-	[IdWorkOrder] [int] IDENTITY(1,1) NOT NULL,
-	[IdVehicle] [int] NOT NULL,
-	[IdStatus] [int] NOT NULL,
-	[Number] [varchar](12) NOT NULL,
-	[Description] [nvarchar](max) NOT NULL,
-	[PromisedDate] [datetime] NOT NULL,
-	[CreatAt] [datetime] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[IdWorkOrder] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[tStatus]    Script Date: 27/02/2026 17:05:29 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[tStatus](
-	[IdStatus] [int] IDENTITY(1,1) NOT NULL,
-	[Status] [nvarchar](20) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[IdStatus] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[tVehicle]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  Table [dbo].[tVehicle]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[tVehicle](
 	[IdVehicle] [int] IDENTITY(1,1) NOT NULL,
-	[IdClient] [int] NOT NULL,
 	[IdVehicleBrand] [int] NOT NULL,
-	[IdVehicleModel] [int] NOT NULL,
-	[Plate] [varchar](10) NOT NULL,
-	[YearManufacture] [int] NOT NULL,
-	[YearModel] [int] NOT NULL,
+	[Vehicle] [nvarchar](32) NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[IdVehicle] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[tVehicleBrand]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  Table [dbo].[tVehicleBrand]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -150,21 +113,36 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[tVehicleModel]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  View [dbo].[vwVehicle]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[tVehicleModel](
-	[IdVehicleModel] [int] IDENTITY(1,1) NOT NULL,
-	[Model] [varchar](32) NOT NULL,
+CREATE VIEW [dbo].[vwVehicle]
+AS
+SELECT        dbo.tVehicleBrand.IdVehicleBrand, dbo.tVehicleBrand.Brand, dbo.tVehicle.IdVehicle, dbo.tVehicle.Vehicle
+FROM            dbo.tVehicle INNER JOIN
+                         dbo.tVehicleBrand ON dbo.tVehicle.IdVehicleBrand = dbo.tVehicleBrand.IdVehicleBrand
+GO
+/****** Object:  Table [dbo].[tVehicleClient]    Script Date: 06/03/2026 14:10:05 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tVehicleClient](
+	[IdVehicleClient] [int] IDENTITY(1,1) NOT NULL,
+	[IdVehicle] [int] NOT NULL,
+	[IdClient] [int] NOT NULL,
+	[Plate] [nvarchar](10) NOT NULL,
+	[YearManufacture] [int] NOT NULL,
+	[YearModel] [int] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[IdVehicleModel] ASC
+	[IdVehicleClient] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[tClient]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  Table [dbo].[tClient]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -179,41 +157,76 @@ CREATE TABLE [dbo].[tClient](
 	[State] [nvarchar](32) NOT NULL,
 	[CEP] [nvarchar](32) NULL,
 	[Contact] [nvarchar](32) NOT NULL,
+	[ContactAux] [nvarchar](32) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[IdClient] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[vwVehicle]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  View [dbo].[vwVehicleClient]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE VIEW [dbo].[vwVehicle]
+CREATE VIEW [dbo].[vwVehicleClient]
 AS
-SELECT        dbo.tVehicle.IdVehicle, dbo.tVehicle.Plate, dbo.tVehicle.YearManufacture, dbo.tVehicle.YearModel, dbo.tVehicleBrand.IdVehicleBrand, dbo.tVehicleBrand.Brand, dbo.tVehicleModel.IdVehicleModel, dbo.tVehicleModel.Model, 
-                         dbo.tClient.IdClient, dbo.tClient.Name, dbo.tClient.Address, dbo.tClient.HouseNumber, dbo.tClient.District, dbo.tClient.City, dbo.tClient.State, dbo.tClient.CEP, dbo.tClient.Contact
-FROM            dbo.tVehicle INNER JOIN
-                         dbo.tVehicleBrand ON dbo.tVehicle.IdVehicleBrand = dbo.tVehicleBrand.IdVehicleBrand INNER JOIN
-                         dbo.tVehicleModel ON dbo.tVehicle.IdVehicleModel = dbo.tVehicleModel.IdVehicleModel INNER JOIN
-                         dbo.tClient ON dbo.tVehicle.IdClient = dbo.tClient.IdClient
+SELECT        dbo.tClient.IdClient, dbo.tClient.Name, dbo.tClient.Address, dbo.tClient.HouseNumber, dbo.tClient.District, dbo.tClient.City, dbo.tClient.State, dbo.tClient.CEP, dbo.tClient.Contact, dbo.tClient.ContactAux, 
+                         dbo.tVehicleClient.IdVehicleClient, dbo.vwVehicle.IdVehicleBrand, dbo.vwVehicle.Brand, dbo.vwVehicle.IdVehicle, dbo.vwVehicle.Vehicle, dbo.tVehicleClient.Plate, dbo.tVehicleClient.YearManufacture, 
+                         dbo.tVehicleClient.YearModel
+FROM            dbo.tClient INNER JOIN
+                         dbo.tVehicleClient ON dbo.tClient.IdClient = dbo.tVehicleClient.IdClient INNER JOIN
+                         dbo.vwVehicle ON dbo.tVehicleClient.IdVehicle = dbo.vwVehicle.IdVehicle
 GO
-/****** Object:  View [dbo].[vwWorkOrder]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  Table [dbo].[tWorkOrder]    Script Date: 06/03/2026 14:10:05 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tWorkOrder](
+	[IdWorkOrder] [int] IDENTITY(1,1) NOT NULL,
+	[IdStatus] [int] NOT NULL,
+	[Number] [varchar](12) NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[PromisedDate] [datetime] NOT NULL,
+	[CreatAt] [datetime] NOT NULL,
+	[IdVehicleClient] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[IdWorkOrder] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tStatus]    Script Date: 06/03/2026 14:10:05 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tStatus](
+	[IdStatus] [int] IDENTITY(1,1) NOT NULL,
+	[Status] [nvarchar](20) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[IdStatus] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[vwWorkOrder]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE VIEW [dbo].[vwWorkOrder]
 AS
-SELECT        dbo.tWorkOrder.IdWorkOrder, dbo.tWorkOrder.Number, dbo.tWorkOrder.Description, dbo.tWorkOrder.PromisedDate, dbo.tWorkOrder.CreatAt, dbo.tStatus.IdStatus, dbo.tStatus.Status, dbo.vwVehicle.IdVehicle, 
-                         dbo.vwVehicle.Plate, dbo.vwVehicle.YearManufacture, dbo.vwVehicle.YearModel, dbo.vwVehicle.IdVehicleBrand, dbo.vwVehicle.Brand, dbo.vwVehicle.IdVehicleModel, dbo.vwVehicle.Model, dbo.vwVehicle.IdClient, 
-                         dbo.vwVehicle.Name, dbo.vwVehicle.Address, dbo.vwVehicle.HouseNumber, dbo.vwVehicle.District, dbo.vwVehicle.City, dbo.vwVehicle.State, dbo.vwVehicle.CEP, dbo.vwVehicle.Contact
+SELECT        dbo.tWorkOrder.IdWorkOrder, dbo.tWorkOrder.Number, dbo.tWorkOrder.Description, dbo.tWorkOrder.PromisedDate, dbo.tWorkOrder.CreatAt, dbo.tStatus.IdStatus, dbo.tStatus.Status, dbo.vwVehicleClient.IdVehicleClient, 
+                         dbo.vwVehicleClient.IdVehicle, dbo.vwVehicleClient.Vehicle, dbo.vwVehicleClient.IdVehicleBrand, dbo.vwVehicleClient.Brand, dbo.vwVehicleClient.Plate, dbo.vwVehicleClient.YearManufacture, dbo.vwVehicleClient.YearModel, 
+                         dbo.vwVehicleClient.IdClient, dbo.vwVehicleClient.Name, dbo.vwVehicleClient.Address, dbo.vwVehicleClient.HouseNumber, dbo.vwVehicleClient.District, dbo.vwVehicleClient.City, dbo.vwVehicleClient.State, 
+                         dbo.vwVehicleClient.CEP, dbo.vwVehicleClient.Contact, dbo.vwVehicleClient.ContactAux
 FROM            dbo.tWorkOrder INNER JOIN
                          dbo.tStatus ON dbo.tWorkOrder.IdStatus = dbo.tStatus.IdStatus INNER JOIN
-                         dbo.vwVehicle ON dbo.tWorkOrder.IdVehicle = dbo.vwVehicle.IdVehicle
+                         dbo.vwVehicleClient ON dbo.tWorkOrder.IdVehicleClient = dbo.vwVehicleClient.IdVehicleClient
 GO
-/****** Object:  Table [dbo].[tMaintenance]    Script Date: 27/02/2026 17:05:29 ******/
+/****** Object:  Table [dbo].[tMaintenance]    Script Date: 06/03/2026 14:10:05 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -238,20 +251,27 @@ REFERENCES [dbo].[tVehicleBrand] ([IdVehicleBrand])
 GO
 ALTER TABLE [dbo].[tVehicle] CHECK CONSTRAINT [FK_tVehicle_tVehicleBrand]
 GO
-ALTER TABLE [dbo].[tVehicle]  WITH CHECK ADD  CONSTRAINT [FK_tVehicle_tVehicleModel] FOREIGN KEY([IdVehicleModel])
-REFERENCES [dbo].[tVehicleModel] ([IdVehicleModel])
+ALTER TABLE [dbo].[tVehicleClient]  WITH CHECK ADD  CONSTRAINT [FK_tVehicleClient_tClient] FOREIGN KEY([IdClient])
+REFERENCES [dbo].[tClient] ([IdClient])
+ON DELETE CASCADE
 GO
-ALTER TABLE [dbo].[tVehicle] CHECK CONSTRAINT [FK_tVehicle_tVehicleModel]
+ALTER TABLE [dbo].[tVehicleClient] CHECK CONSTRAINT [FK_tVehicleClient_tClient]
+GO
+ALTER TABLE [dbo].[tVehicleClient]  WITH CHECK ADD  CONSTRAINT [FK_tVehicleClient_tVehicle] FOREIGN KEY([IdVehicle])
+REFERENCES [dbo].[tVehicle] ([IdVehicle])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[tVehicleClient] CHECK CONSTRAINT [FK_tVehicleClient_tVehicle]
 GO
 ALTER TABLE [dbo].[tWorkOrder]  WITH CHECK ADD  CONSTRAINT [FK_tWorkOrder_tStatus] FOREIGN KEY([IdStatus])
 REFERENCES [dbo].[tStatus] ([IdStatus])
 GO
 ALTER TABLE [dbo].[tWorkOrder] CHECK CONSTRAINT [FK_tWorkOrder_tStatus]
 GO
-ALTER TABLE [dbo].[tWorkOrder]  WITH CHECK ADD  CONSTRAINT [FK_tWorkOrder_tVehicle] FOREIGN KEY([IdVehicle])
-REFERENCES [dbo].[tVehicle] ([IdVehicle])
+ALTER TABLE [dbo].[tWorkOrder]  WITH CHECK ADD  CONSTRAINT [FK_tWorkOrder_tVehicleClient] FOREIGN KEY([IdVehicleClient])
+REFERENCES [dbo].[tVehicleClient] ([IdVehicleClient])
 GO
-ALTER TABLE [dbo].[tWorkOrder] CHECK CONSTRAINT [FK_tWorkOrder_tVehicle]
+ALTER TABLE [dbo].[tWorkOrder] CHECK CONSTRAINT [FK_tWorkOrder_tVehicleClient]
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -326,40 +346,20 @@ Begin DesignProperties =
       Begin Tables = 
          Begin Table = "tVehicle"
             Begin Extent = 
-               Top = 57
-               Left = 420
-               Bottom = 267
-               Right = 600
+               Top = 6
+               Left = 38
+               Bottom = 187
+               Right = 208
             End
             DisplayFlags = 280
             TopColumn = 0
          End
          Begin Table = "tVehicleBrand"
             Begin Extent = 
-               Top = 16
-               Left = 704
-               Bottom = 117
-               Right = 874
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "tVehicleModel"
-            Begin Extent = 
-               Top = 143
-               Left = 697
-               Bottom = 257
-               Right = 868
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "tClient"
-            Begin Extent = 
-               Top = 22
-               Left = 39
-               Bottom = 260
-               Right = 209
+               Top = 6
+               Left = 246
+               Bottom = 161
+               Right = 416
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -371,8 +371,149 @@ Begin DesignProperties =
    Begin DataPane = 
       Begin ParameterDefaults = ""
       End
-      Begin ColumnWidths = 9
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicle'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicle'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[40] 4[20] 2[20] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "tClient"
+            Begin Extent = 
+               Top = 21
+               Left = 76
+               Bottom = 269
+               Right = 246
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "tVehicleClient"
+            Begin Extent = 
+               Top = 41
+               Left = 338
+               Bottom = 229
+               Right = 518
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "vwVehicle"
+            Begin Extent = 
+               Top = 24
+               Left = 589
+               Bottom = 269
+               Right = 759
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+      Begin ColumnWidths = 19
          Width = 284
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
          Width = 1500
          Width = 1500
          Width = 1500
@@ -397,15 +538,13 @@ Begin DesignProperties =
          Filter = 1350
          Or = 1350
          Or = 1350
-         Or = 1350' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicle'
-GO
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'
+         Or = 1350
       End
    End
 End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicle'
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicleClient'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicle'
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=1 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'vwVehicleClient'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
 Begin DesignProperties = 
@@ -480,30 +619,30 @@ Begin DesignProperties =
       Begin Tables = 
          Begin Table = "tWorkOrder"
             Begin Extent = 
-               Top = 44
-               Left = 379
-               Bottom = 286
-               Right = 549
+               Top = 14
+               Left = 278
+               Bottom = 267
+               Right = 448
             End
             DisplayFlags = 280
             TopColumn = 0
          End
-         Begin Table = "vwVehicle"
+         Begin Table = "vwVehicleClient"
             Begin Extent = 
-               Top = 14
-               Left = 616
-               Bottom = 327
-               Right = 796
+               Top = 4
+               Left = 548
+               Bottom = 331
+               Right = 728
             End
             DisplayFlags = 280
-            TopColumn = 3
+            TopColumn = 0
          End
          Begin Table = "tStatus"
             Begin Extent = 
-               Top = 18
-               Left = 58
-               Bottom = 114
-               Right = 228
+               Top = 6
+               Left = 40
+               Bottom = 157
+               Right = 210
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -514,6 +653,17 @@ Begin DesignProperties =
    End
    Begin DataPane = 
       Begin ParameterDefaults = ""
+      End
+      Begin ColumnWidths = 9
+         Width = 284
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
       End
    End
    Begin CriteriaPane = 

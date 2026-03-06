@@ -1,6 +1,6 @@
 ﻿<MudDialog TitleClass="bg-warning text-white" ContentClass="py-5">
     <TitleContent>
-        <h3>Editar Véiculo ao Cliente</h3>
+        <h3>Editar Véiculo do Cliente</h3>
     </TitleContent>
     <DialogContent>
         <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
@@ -64,7 +64,7 @@
         _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
         if (!_brands.Any()) return;
 
-        _idBrand = _brands.FirstOrDefault(x => x.IdVehicleBrand == form.IdVehicleBrand).IdVehicleBrand;
+        _idBrand = _brands.FirstOrDefault(x => x.IdVehicleBrand == form.IdVehicleBrand)!.IdVehicleBrand;
         await OnChange(_idBrand);
     }
 
@@ -76,13 +76,13 @@
         _vehicles = await DBAutoTrackContext.tVehicle.Where(x => x.IdVehicleBrand == idBrand).ToListAsync();
         if (_vehicles.Any())
             _idVehicle = _vehicles.First().IdVehicle;
-
+ 
         StateHasChanged();
     }
 
     private void Submit()
     {
-        tVehicleClient vehicleClient = DBAutoTrackContext.tVehicleClient.Find(form.IdVehicleClient);
+        tVehicleClient vehicleClient = DBAutoTrackContext.tVehicleClient.Find(form.IdVehicleClient)!;
         if (vehicleClient is null) Cancel();
 
         if (vehicleClient!.IdVehicle != _idVehicle)
