@@ -1,6 +1,6 @@
-﻿<MudDialog TitleClass="bg-success text-white" ContentClass="py-5">
+﻿<MudDialog TitleClass="bg-warning text-white" ContentClass="py-5">
     <TitleContent>
-        <h3>Adicionar Véiculo ao Cliente</h3>
+        <h3>Editar Véiculo ao Cliente</h3>
     </TitleContent>
     <DialogContent>
         <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
@@ -39,8 +39,8 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancelar</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Adicionar</MudButton>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Salvar Alterações</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -64,7 +64,7 @@
         _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
         if (!_brands.Any()) return;
 
-        _idBrand = _brands.First().IdVehicleBrand;
+        _idBrand = _brands.FirstOrDefault(x => x.IdVehicleBrand == form.IdVehicleBrand).IdVehicleBrand;
         await OnChange(_idBrand);
     }
 
@@ -82,16 +82,21 @@
 
     private void Submit()
     {
-        tVehicleClient vehicleClient = new()
-        {
-            IdVehicle = _idVehicle,
-            IdClient = form.IdClient,
-            Plate = form.Plate,
-            YearManufacture = form.YearManufacture,
-            YearModel = form.YearModel,
-        };
+        tVehicleClient vehicleClient = DBAutoTrackContext.tVehicleClient.Find(form.IdVehicleClient);
+        if (vehicleClient is null) Cancel();
 
-        DBAutoTrackContext.tVehicleClient.Add(vehicleClient);
+        if (vehicleClient!.IdVehicle != _idVehicle)
+            vehicleClient.IdVehicle = _idVehicle;
+
+        if (vehicleClient.Plate != form.Plate)
+            vehicleClient.Plate = form.Plate;
+
+        if (vehicleClient.YearManufacture != form.YearManufacture)
+            vehicleClient.YearManufacture = form.YearManufacture;
+
+        if (vehicleClient.YearModel != form.YearModel)
+            vehicleClient.YearModel = form.YearModel;
+       
         DBAutoTrackContext.SaveChanges();
 
         MudDialog.Close(DialogResult.Ok(true));

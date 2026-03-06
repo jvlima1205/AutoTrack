@@ -113,36 +113,36 @@
 
     private async Task Edit(vwVehicleClient vehicle)
     {
-        // var parameters = new DialogParameters<EditVehicle>
-        // {
-        //     { x => x.form, vehicle }
-        // };
+        var parameters = new DialogParameters<EditVehicleClient>
+        {
+            { x => x.form, vehicle }
+        };
 
-        // var dialog = await Dialog.ShowAsync<EditVehicle>("EditVehicle", parameters);
-        // var result = await dialog.Result;
+        var dialog = await Dialog.ShowAsync<EditVehicleClient>("EditVehicleClient", parameters);
+        var result = await dialog.Result;
 
-        // if (!result!.Canceled)
-        // {
-        //     await UpdateData();
-        //     Snack.SuccessEdit();
-        // }
+        if (!result!.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessEdit();
+        }
     }
 
     private async Task Delete(vwVehicleClient vehicle)
     {
-        // var parameters = new DialogParameters<DeleteVehicle>
-        // {
-        //     { x => x.form, vehicle }
-        // };
+        var parameters = new DialogParameters<DeleteVehicleClient>
+        {
+            { x => x.form, vehicle }
+        };
 
-        // var dialog = await Dialog.ShowAsync<DeleteVehicle>("DeleteVehicle", parameters);
-        // var result = await dialog.Result;
+        var dialog = await Dialog.ShowAsync<DeleteVehicleClient>("DeleteVehicleClient", parameters);
+        var result = await dialog.Result;
 
-        // if (!result!.Canceled)
-        // {
-        //     await UpdateData();
-        //     Snack.SuccessDelete();
-        // }
+        if (!result!.Canceled)
+        {
+            await UpdateData();
+            Snack.SuccessDelete();
+        }
     }
 
 }

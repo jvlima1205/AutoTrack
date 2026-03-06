@@ -1,0 +1,84 @@
+﻿<MudDialog TitleClass="bg-danger text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Deletar Véiculo ao Cliente</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
+
+            <div class="d-flex flex-row">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Name)" Label="Nome" @bind-Value="form.Name" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Brand)" Label="Marca" @bind-Value="form.Brand" ReadOnly="true" />
+
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Vehicle)" Label="Modelo" @bind-Value="form.Vehicle" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Plate)" Label="Placa" @bind-Value="form.Plate" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearManufacture)" Label="Ano de Fabricação" @bind-Value="form.YearManufacture" ReadOnly="true" />
+
+                <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearModel)" Label="Ano do Modelo" @bind-Value="form.YearModel" ReadOnly="true" />
+            </div>
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Submit">Deletar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public vwVehicleClient form { get; set; } = new();
+
+    private int _idBrand = 0;
+    private List<tVehicleBrand> _brands { get; set; } = [];
+
+    private bool _brandSelect = false;
+
+    private int _idVehicle = 0;
+    private List<tVehicle> _vehicles { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+        if (!_brands.Any()) return;
+
+        _idBrand = _brands.FirstOrDefault(x => x.IdVehicleBrand == form.IdVehicleBrand).IdVehicleBrand;
+        await OnChange(_idBrand);
+    }
+
+    private async Task OnChange(int idBrand)
+    {
+        _idBrand = idBrand;
+        _brandSelect = true;
+
+        _vehicles = await DBAutoTrackContext.tVehicle.Where(x => x.IdVehicleBrand == idBrand).ToListAsync();
+        if (_vehicles.Any())
+            _idVehicle = _vehicles.First().IdVehicle;
+
+        StateHasChanged();
+    }
+
+    private void Submit()
+    {
+        tVehicleClient? vehicleClient = DBAutoTrackContext.tVehicleClient.Find(form.IdVehicleClient);
+        if (vehicleClient is null) Cancel();
+
+        DBAutoTrackContext.tVehicleClient.Remove(vehicleClient!);
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
