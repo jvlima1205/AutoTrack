@@ -57,53 +57,80 @@
 
     private async Task UpdateData()
     {
-        _workOrders = await DBAutoTrackContext.vwWorkOrder.ToListAsync();
-
+        try
+        {
+            _workOrders = await DBAutoTrackContext.vwWorkOrder.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
     }
 
     private async Task Add()
     {
-        var dialog = await Dialog.ShowAsync<AddWorkOrder>("AddWorkOrder");
-        var result = await dialog.Result;
-
-        if (!result!.Canceled)
+        try
         {
-            await UpdateData();
-            Snack.SuccessAdd();
+            var dialog = await Dialog.ShowAsync<AddWorkOrder>("AddWorkOrder");
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessAdd();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
         }
     }
 
     private async Task Edit(vwWorkOrder workOrder)
     {
-        var parameters = new DialogParameters<EditWorkOrder>
+        try
         {
-            { x => x.form, workOrder }
-        };
+            var parameters = new DialogParameters<EditWorkOrder>
+            {
+                { x => x.form, workOrder }
+            };
 
-        var dialog = await Dialog.ShowAsync<EditWorkOrder>("EditWorkOrder", parameters);
-        var result = await dialog.Result;
+            var dialog = await Dialog.ShowAsync<EditWorkOrder>("EditWorkOrder", parameters);
+            var result = await dialog.Result;
 
-        if (!result!.Canceled)
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessEdit();
+            }
+        }
+        catch (Exception ex)
         {
-            await UpdateData();
-            Snack.SuccessEdit();
+            Redirect.Error(ex);
         }
     }
 
     private async Task Delete(vwWorkOrder workOrder)
     {
-        var parameters = new DialogParameters<DeleteWorkOrder>
+        try
         {
-            { x => x.form, workOrder }
-        };
+            var parameters = new DialogParameters<DeleteWorkOrder>
+            {
+                { x => x.form, workOrder }
+            };
 
-        var dialog = await Dialog.ShowAsync<DeleteWorkOrder>("DeleteWorkOrder", parameters);
-        var result = await dialog.Result;
+            var dialog = await Dialog.ShowAsync<DeleteWorkOrder>("DeleteWorkOrder", parameters);
+            var result = await dialog.Result;
 
-        if (!result!.Canceled)
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessDelete();
+            }
+        }
+        catch (Exception ex)
         {
-            await UpdateData();
-            Snack.SuccessDelete();
+            Redirect.Error(ex);
         }
     }
 

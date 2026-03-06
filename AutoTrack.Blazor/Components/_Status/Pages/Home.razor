@@ -12,7 +12,7 @@
     <div>
         <MudTable Items="@_statuses" Hover="true" Breakpoint="Breakpoint.Sm">
             <ColGroup>
-                <col  />
+                <col />
                 <col style="width: 20%;" />
             </ColGroup>
             <HeaderContent>
@@ -44,52 +44,80 @@
 
     private async Task UpdateData()
     {
-        _statuses = await DBAutoTrackContext.tStatus.ToListAsync();
+        try
+        {
+            _statuses = await DBAutoTrackContext.tStatus.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
     }
 
     private async Task Add()
     {
-        var dialog = await Dialog.ShowAsync<AddStatus>("AddStatus");
-        var result = await dialog.Result;
-
-        if (!result!.Canceled)
+        try
         {
-            await UpdateData();
-            Snack.SuccessAdd();
+            var dialog = await Dialog.ShowAsync<AddStatus>("AddStatus");
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessAdd();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
         }
     }
 
     private async Task Edit(tStatus status)
     {
-        var parameters = new DialogParameters<EditStatus>
+        try
         {
-            { x => x.form, status }
-        };
+            var parameters = new DialogParameters<EditStatus>
+            {
+                { x => x.form, status }
+            };
 
-        var dialog = await Dialog.ShowAsync<EditStatus>("EditStatus", parameters);
-        var result = await dialog.Result;
+            var dialog = await Dialog.ShowAsync<EditStatus>("EditStatus", parameters);
+            var result = await dialog.Result;
 
-        if (!result!.Canceled)
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessEdit();
+            }
+        }
+        catch (Exception ex)
         {
-            await UpdateData();
-            Snack.SuccessEdit();
+            Redirect.Error(ex);
         }
     }
 
     private async Task Delete(tStatus status)
     {
-        var parameters = new DialogParameters<DeleteStatus>
+        try
         {
-            { x => x.form, status }
-        };
+            var parameters = new DialogParameters<DeleteStatus>
+            {
+                { x => x.form, status }
+            };
 
-        var dialog = await Dialog.ShowAsync<DeleteStatus>("DeleteStatus", parameters);
-        var result = await dialog.Result;
+            var dialog = await Dialog.ShowAsync<DeleteStatus>("DeleteStatus", parameters);
+            var result = await dialog.Result;
 
-        if (!result!.Canceled)
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessDelete();
+            }
+        }
+        catch (Exception ex)
         {
-            await UpdateData();
-            Snack.SuccessDelete();
+            Redirect.Error(ex);
         }
     }
 
