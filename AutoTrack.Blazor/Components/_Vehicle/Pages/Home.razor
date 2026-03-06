@@ -10,16 +10,32 @@
     </div>
 
     <div>
-        <MudTable Items="@_vehicles" Hover="true" Breakpoint="Breakpoint.Sm">
+        <MudTable FixedHeader="true"
+                  FixedFooter="true"
+                  Class="py-2"
+                  Items="@mudtable.Data"
+                  Filter="@mudtable.Function"
+                  Height="@mudtable.Height"
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
             <ColGroup>
                 <col />
                 <col />
                 <col style="width: 20%;" />
             </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Veículos Cadastrados</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="mudtable.SearchString"
+                              Placeholder="@mudtable.Placeholder"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium">
+                </MudTextField>
+            </ToolBarContent>
             <HeaderContent>
-                <MudTh>Marca</MudTh>
-                <MudTh>Veículo</MudTh>
-                <MudTh>Ações</MudTh>
+                <MudTh Class="bg-dark text-white">Marcas</MudTh>
+                <MudTh Class="bg-dark text-white">Veículos</MudTh>
+                <MudTh Class="bg-dark text-white">Ações</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd>@context.Brand</MudTd>
@@ -38,7 +54,7 @@
 
 @code {
 
-    private List<vwVehicle> _vehicles = new List<vwVehicle>();
+    private MudtableFunction<vwVehicle> mudtable = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -49,7 +65,7 @@
     {
         try
         {
-            _vehicles = await DBAutoTrackContext.vwVehicle.ToListAsync();
+            mudtable.Data = await DBAutoTrackContext.vwVehicle.ToListAsync();
         }
         catch (Exception ex)
         {
