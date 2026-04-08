@@ -10,11 +10,28 @@
     </div>
 
     <div>
-        <MudTable Items="@_brands" Hover="true" Breakpoint="Breakpoint.Sm">
+        <MudTable FixedHeader="true"
+                  FixedFooter="true"
+                  Class="p-2"
+                  Items="@mudtable.Data"
+                  Filter="@mudtable.Function"
+                  Height="@mudtable.Height"
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
             <ColGroup>
                 <col />
                 <col style="width: 20%;" />
             </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Veículos Cadastrados</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="mudtable.SearchString"
+                              Placeholder="@mudtable.Placeholder"
+                              Adornment="Adornment.Start"
+                              Variant="Variant.Outlined"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium">
+                </MudTextField>
+            </ToolBarContent>
             <HeaderContent>
                 <MudTh>Marca</MudTh>
                 <MudTh>Ações</MudTh>
@@ -35,7 +52,7 @@
 
 @code {
 
-    private List<tVehicleBrand> _brands = new List<tVehicleBrand>();
+    private MudtableFunction<tVehicleBrand> mudtable = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -46,7 +63,7 @@
     {
         try
         {
-            _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+            mudtable.Data = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
         }
         catch (Exception ex)
         {
@@ -58,7 +75,7 @@
     {
         try
         {
-            var dialog = await Dialog.ShowAsync<AddVehicleBrand>("AddVehicleBrand");
+            var dialog = await Dialog.ShowAsync<VehicleBrandAdd>("AddVehicleBrand");
             var result = await dialog.Result;
 
             if (!result!.Canceled)
@@ -77,12 +94,12 @@
     {
         try
         {
-            var parameters = new DialogParameters<EditVehicleBrand>
+            var parameters = new DialogParameters<VehicleBrandEdit>
             {
                 { x => x.form, brand }
             };
 
-            var dialog = await Dialog.ShowAsync<EditVehicleBrand>("EditVehicleBrand", parameters);
+            var dialog = await Dialog.ShowAsync<VehicleBrandEdit>("EditVehicleBrand", parameters);
             var result = await dialog.Result;
 
             if (!result!.Canceled)
@@ -101,12 +118,12 @@
     {
         try
         {
-            var parameters = new DialogParameters<DeleteVehicleBrand>
+            var parameters = new DialogParameters<VehicleBrandDelete>
             {
                 { x => x.form, brand }
             };
 
-            var dialog = await Dialog.ShowAsync<DeleteVehicleBrand>("DeleteVehicleBrand", parameters);
+            var dialog = await Dialog.ShowAsync<VehicleBrandDelete>("DeleteVehicleBrand", parameters);
             var result = await dialog.Result;
 
             if (!result!.Canceled)

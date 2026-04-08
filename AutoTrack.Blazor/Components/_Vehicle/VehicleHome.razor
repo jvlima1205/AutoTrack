@@ -12,7 +12,7 @@
     <div>
         <MudTable FixedHeader="true"
                   FixedFooter="true"
-                  Class="py-2"
+                  Class="p-2"
                   Items="@mudtable.Data"
                   Filter="@mudtable.Function"
                   Height="@mudtable.Height"
@@ -28,6 +28,7 @@
                 <MudTextField @bind-Value="mudtable.SearchString"
                               Placeholder="@mudtable.Placeholder"
                               Adornment="Adornment.Start"
+                              Variant="Variant.Outlined"
                               AdornmentIcon="@Icons.Material.Filled.Search"
                               IconSize="Size.Medium">
                 </MudTextField>
@@ -77,7 +78,7 @@
     {
         try
         {
-            var dialog = await Dialog.ShowAsync<AddVehicle>("AddVehicle");
+            var dialog = await Dialog.ShowAsync<VehicleAdd>("AddVehicle");
             var result = await dialog.Result;
 
             if (!result!.Canceled)
@@ -96,12 +97,12 @@
     {
         try
         {
-            var parameters = new DialogParameters<EditVehicle>
+            var parameters = new DialogParameters<VehicleEdit>
             {
                 { x => x.form, vehicle }
             };
 
-            var dialog = await Dialog.ShowAsync<EditVehicle>("EditVehicle", parameters);
+            var dialog = await Dialog.ShowAsync<VehicleEdit>("EditVehicle", parameters);
             var result = await dialog.Result;
 
             if (!result!.Canceled)
@@ -120,12 +121,12 @@
     {
         try
         {
-            var parameters = new DialogParameters<DeleteVehicle>
+            var parameters = new DialogParameters<VehicleDelete>
             {
                 { x => x.form, vehicle }
             };
 
-            var dialog = await Dialog.ShowAsync<DeleteVehicle>("DeleteVehicle", parameters);
+            var dialog = await Dialog.ShowAsync<VehicleDelete>("DeleteVehicle", parameters);
             var result = await dialog.Result;
 
             if (!result!.Canceled)

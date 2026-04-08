@@ -1,34 +1,44 @@
-﻿@page "/Client/Home"
+﻿@page "/Status/Home"
 @rendermode InteractiveServer
 
 <section class="d-flex flex-column gap-3">
 
-    <h3>Lista de Clientes</h3>
+    <h3>Lista de Status</h3>
 
     <div>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Cliente</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Status</MudButton>
     </div>
 
     <div>
-        <MudTable Items="@_clients" Hover="true" Breakpoint="Breakpoint.Sm">
+        <MudTable FixedHeader="true"
+                  FixedFooter="true"
+                  Class="p-2"
+                  Items="@mudtable.Data"
+                  Filter="@mudtable.Function"
+                  Height="@mudtable.Height"
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
             <ColGroup>
-                <col />
-                <col />
                 <col />
                 <col style="width: 20%;" />
             </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Veículos Cadastrados</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="mudtable.SearchString"
+                              Placeholder="@mudtable.Placeholder"
+                              Adornment="Adornment.Start"
+                              Variant="Variant.Outlined"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium">
+                </MudTextField>
+            </ToolBarContent>
             <HeaderContent>
-                <MudTh>Nome</MudTh>
-                <MudTh>Contato</MudTh>
-                <MudTh>Contato Auxiliar</MudTh>
+                <MudTh>Nome do Status</MudTh>
                 <MudTh>Ações</MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd>@context.Name</MudTd>
-                <MudTd>@context.Contact</MudTd>
-                <MudTd>@context.ContactAux</MudTd>
+                <MudTd>@context.Status</MudTd>
                 <MudTd>
-                    <MudButton Href="@($"VehicleClient/Home/{context.IdClient}")" Variant="Variant.Outlined" Color="Color.Info">Veículos</MudButton>
                     <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
                     <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
                 </MudTd>
@@ -42,7 +52,7 @@
 
 @code {
 
-    private List<tClient> _clients = new List<tClient>();
+    private MudtableFunction<tStatus> mudtable = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,7 +63,7 @@
     {
         try
         {
-            _clients = await DBAutoTrackContext.tClient.ToListAsync();
+            mudtable.Data = await DBAutoTrackContext.tStatus.ToListAsync();
         }
         catch (Exception ex)
         {
@@ -65,7 +75,7 @@
     {
         try
         {
-            var dialog = await Dialog.ShowAsync<AddClient>("AddClient");
+            var dialog = await Dialog.ShowAsync<StatusAdd>("AddStatus");
             var result = await dialog.Result;
 
             if (!result!.Canceled)
@@ -80,16 +90,16 @@
         }
     }
 
-    private async Task Edit(tClient client)
+    private async Task Edit(tStatus status)
     {
         try
         {
-            var parameters = new DialogParameters<EditClient>
+            var parameters = new DialogParameters<StatusEdit>
             {
-                { x => x.form, client }
+                { x => x.form, status }
             };
 
-            var dialog = await Dialog.ShowAsync<EditClient>("EditClient", parameters);
+            var dialog = await Dialog.ShowAsync<StatusEdit>("EditStatus", parameters);
             var result = await dialog.Result;
 
             if (!result!.Canceled)
@@ -104,16 +114,16 @@
         }
     }
 
-    private async Task Delete(tClient client)
+    private async Task Delete(tStatus status)
     {
         try
         {
-            var parameters = new DialogParameters<DeleteClient>
+            var parameters = new DialogParameters<StatusDelete>
             {
-                { x => x.form, client }
+                { x => x.form, status }
             };
 
-            var dialog = await Dialog.ShowAsync<DeleteClient>("DeleteClient", parameters);
+            var dialog = await Dialog.ShowAsync<StatusDelete>("DeleteStatus", parameters);
             var result = await dialog.Result;
 
             if (!result!.Canceled)
