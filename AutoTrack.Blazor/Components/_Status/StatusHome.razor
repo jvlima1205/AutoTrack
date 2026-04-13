@@ -1,0 +1,141 @@
+﻿@page "/Status/Home"
+@rendermode InteractiveServer
+
+<section class="d-flex flex-column gap-3">
+
+    <h3>Lista de Status</h3>
+
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Status</MudButton>
+    </div>
+
+    <div>
+        <MudTable FixedHeader="true"
+                  FixedFooter="true"
+                  Class="p-2"
+                  Items="@mudtable.Data"
+                  Filter="@mudtable.Function"
+                  Height="@mudtable.Height"
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
+            <ColGroup>
+                <col />
+                <col style="width: 20%;" />
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Veículos Cadastrados</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="mudtable.SearchString"
+                              Placeholder="@mudtable.Placeholder"
+                              Adornment="Adornment.Start"
+                              Variant="Variant.Outlined"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium">
+                </MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Nome do Status</MudTh>
+                <MudTh>Ações</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Status</MudTd>
+                <MudTd>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+
+</section>
+
+
+
+@code {
+
+    private MudtableFunction<tStatus> mudtable = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
+        try
+        {
+            mudtable.Data = await DBAutoTrackContext.tStatus.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+    private async Task Add()
+    {
+        try
+        {
+            var dialog = await Dialog.ShowAsync<StatusAdd>("AddStatus");
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessAdd();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+    private async Task Edit(tStatus status)
+    {
+        try
+        {
+            var parameters = new DialogParameters<StatusEdit>
+            {
+                { x => x.form, status }
+            };
+
+            var dialog = await Dialog.ShowAsync<StatusEdit>("EditStatus", parameters);
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessEdit();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+    private async Task Delete(tStatus status)
+    {
+        try
+        {
+            var parameters = new DialogParameters<StatusDelete>
+            {
+                { x => x.form, status }
+            };
+
+            var dialog = await Dialog.ShowAsync<StatusDelete>("DeleteStatus", parameters);
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessDelete();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+}

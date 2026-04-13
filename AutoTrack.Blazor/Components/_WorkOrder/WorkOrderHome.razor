@@ -1,0 +1,156 @@
+﻿@page "/WorkOrder/Home"
+@rendermode InteractiveServer
+
+<section class="d-flex flex-column gap-2">
+
+    <h3>Ordem de seviço</h3>
+
+    <div>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Add">Adicionar Ordem de Serviço</MudButton>
+    </div>
+
+    <div>
+        <MudTable FixedHeader="true"
+                  FixedFooter="true"
+                  Class="p-2"
+                  Items="@mudtable.Data"
+                  Filter="@mudtable.Function"
+                  Height="@mudtable.Height"
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
+            <ColGroup>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col style="width: 20%;" />
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Veículos Cadastrados</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="mudtable.SearchString"
+                              Placeholder="@mudtable.Placeholder"
+                              Adornment="Adornment.Start"
+                              Variant="Variant.Outlined"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="Size.Medium">
+                </MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Número</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>Cliente</MudTh>
+                <MudTh>Placa</MudTh>
+                <MudTh>Criado Em</MudTh>
+                <MudTh>Data Prometida</MudTh>
+                <MudTh>Ações</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Number</MudTd>
+                <MudTd>@context.Status</MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Plate</MudTd>
+                <MudTd>@context.CreatAt</MudTd>
+                <MudTd>@context.PromisedDate</MudTd>
+                <MudTd>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+
+</section>
+
+
+
+@code {
+
+    private MudtableFunction<vwWorkOrder> mudtable = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
+        try
+        {
+            mudtable.Data = await DBAutoTrackContext.vwWorkOrder.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+    private async Task Add()
+    {
+        try
+        {
+            var dialog = await Dialog.ShowAsync<WorkOrderAdd>("AddWorkOrder");
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessAdd();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+    private async Task Edit(vwWorkOrder workOrder)
+    {
+        try
+        {
+            var parameters = new DialogParameters<WorkOrderEdit>
+            {
+                { x => x.form, workOrder }
+            };
+
+            var dialog = await Dialog.ShowAsync<WorkOrderEdit>("EditWorkOrder", parameters);
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessEdit();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+    private async Task Delete(vwWorkOrder workOrder)
+    {
+        try
+        {
+            var parameters = new DialogParameters<WorkOrderDelete>
+            {
+                { x => x.form, workOrder }
+            };
+
+            var dialog = await Dialog.ShowAsync<WorkOrderDelete>("DeleteWorkOrder", parameters);
+            var result = await dialog.Result;
+
+            if (!result!.Canceled)
+            {
+                await UpdateData();
+                Snack.SuccessDelete();
+            }
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+}

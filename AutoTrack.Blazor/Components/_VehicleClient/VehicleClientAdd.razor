@@ -1,0 +1,98 @@
+﻿<MudDialog TitleClass="bg-success text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Adicionar Véiculo ao Cliente</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
+
+            <div class="d-flex flex-row">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Name)" Label="Nome" @bind-Value="form.Name" ReadOnly="true" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudSelect T="int?" Variant="Variant.Outlined" Label="Marca" Value="@_idBrand" ValueChanged="OnChange" Required="true" RequiredError="Modelo obrigatório">
+                    @foreach (tVehicleBrand brand in _brands)
+                    {
+                        <MudSelectItem Value="@((int?)brand.IdVehicleBrand)">@brand.Brand</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect" Required="true" RequiredError="Marca obrigatória">
+                    @if (_vehicles.Any())
+                        @foreach (tVehicle vehicle in _vehicles)
+                        {
+                            <MudSelectItem Value="@((int?)vehicle.IdVehicle)">@vehicle.Vehicle</MudSelectItem>
+                        }
+                </MudSelect>
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudTextField Variant="Variant.Outlined" For="@(() => form.Plate)" Label="Placa" @bind-Value="form.Plate" Required="true" RequiredError="Placa obrigatória" />
+            </div>
+
+            <div class="d-flex flex-row gap-3">
+                <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearManufacture)" Label="Ano de Fabricação" @bind-Value="form.YearManufacture" Required="true" RequiredError="Ano de Fabricação obrigatório" />
+
+                <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearModel)" Label="Ano do Modelo" @bind-Value="form.YearModel" Required="true" RequiredError="Ano do Modelo obrigatório" />
+            </div>
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Adicionar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public vwVehicleClient form { get; set; } = new();
+
+    private bool _brandSelect = false;
+    private int? _idBrand = null;
+    private List<tVehicleBrand> _brands { get; set; } = [];
+
+
+    private int? _idVehicle = null;
+    private List<tVehicle> _vehicles { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+        form.Plate = string.Empty;
+        form.YearManufacture = 0;
+        form.YearModel = 0;
+    }
+
+    private async Task OnChange(int? idBrand)
+    {
+        _idBrand = idBrand;
+        _brandSelect = true;
+
+        _vehicles = await DBAutoTrackContext.tVehicle.Where(x => x.IdVehicleBrand == idBrand).ToListAsync();
+
+        StateHasChanged();
+    }
+
+    private void Submit()
+    {
+        tVehicleClient vehicleClient = new()
+        {
+            IdVehicle = (int)_idVehicle!,
+            IdClient = form.IdClient,
+            Plate = form.Plate,
+            YearManufacture = form.YearManufacture,
+            YearModel = form.YearModel,
+        };
+
+        DBAutoTrackContext.tVehicleClient.Add(vehicleClient);
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

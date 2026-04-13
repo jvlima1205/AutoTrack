@@ -93,16 +93,34 @@ public class MudtableFunction<T>
             Items="@mudtable.Data"
             Filter="@mudtable.Function"
             Height="@mudtable.Height"
-            RowsPerPage="@mudtable.RowsPerPage"
-            @bind-SelectedItem="mudtable.SelectedItem">
-
-    <MudTextField @bind-Value="mudtable.searchString"
-                    Placeholder="@mudtable.data"
-                    Adornment="Adornment.Start"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    IconSize="Size.Medium"
-                    Class="mt-0">
-    </MudTextField>
-<MudTable/>
-
+            RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
+    <ColGroup>
+        <col />
+        <col />
+        <col style="width: 20%;" />
+    </ColGroup>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Veículos Cadastrados</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="mudtable.SearchString"
+            Placeholder="@mudtable.Placeholder"
+            Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            IconSize="Size.Medium">
+            </MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Marca</MudTh>
+        <MudTh>Veículo</MudTh>
+        <MudTh>Ações</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Brand</MudTd>
+        <MudTd>@context.Vehicle</MudTd>
+        <MudTd>
+            <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
+            <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
 */

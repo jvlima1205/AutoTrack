@@ -20,6 +20,7 @@ namespace AutoTrack.Blazor
             builder.Services.AddMudServices();
 
             builder.Services.AddScoped<SnackBarService>();
+            builder.Services.AddScoped<Redirect>();
 
             var app = builder.Build();
 

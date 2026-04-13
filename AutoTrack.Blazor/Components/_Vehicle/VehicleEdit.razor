@@ -1,0 +1,59 @@
+﻿<MudDialog TitleClass="bg-warning text-white" ContentClass="py-5">
+    <TitleContent>
+        <h3>Editar Veículo</h3>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Model="@form" Spacing="2">
+
+            <MudSelect Variant="Variant.Outlined" Label="Marca" @bind-Value="@_idBrand">
+                @foreach (tVehicleBrand brand in _brands)
+                {
+                    <MudSelectItem Value="brand.IdVehicleBrand">@brand.Brand</MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudTextField Variant="Variant.Outlined" For="@(() => form.Vehicle)" Label="Modelo" @bind-Value="form.Vehicle" />
+
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Salvar Alterações</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public vwVehicle form { get; set; } = new();
+
+    private int _idBrand { get; set; } = new();
+    private List<tVehicleBrand> _brands { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+        _idBrand = form.IdVehicleBrand;
+    }
+
+    private void Submit()
+    {
+        tVehicle? vehicle = DBAutoTrackContext.tVehicle.Find(form.IdVehicle);
+        if (vehicle is null) Cancel();
+
+        if (vehicle!.IdVehicleBrand != form.IdVehicleBrand)
+            vehicle.IdVehicleBrand = form.IdVehicleBrand;
+
+        if (vehicle!.Vehicle != form.Vehicle)
+            vehicle.Vehicle = form.Vehicle;
+
+        DBAutoTrackContext.Entry(vehicle).State = EntityState.Modified;
+        DBAutoTrackContext.SaveChanges();
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
