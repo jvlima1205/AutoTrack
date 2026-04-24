@@ -21,7 +21,9 @@
                   Items="@mudtable.Data"
                   Filter="@mudtable.Function"
                   Height="@mudtable.Height"
-                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem"
+                  Bordered="true"
+                  Hover="true">
             <ColGroup>
                 <col />
                 <col />
@@ -56,8 +58,8 @@
                 <MudTd>@context.YearManufacture</MudTd>
                 <MudTd>@context.YearModel</MudTd>
                 <MudTd>
-                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
-                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Filled" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Filled" Color="Color.Error">Deletar</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>

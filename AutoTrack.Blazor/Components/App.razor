@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <MudThemeProvider @rendermode="InteractiveServer" />
+    <MudThemeProvider @rendermode="InteractiveServer" Theme="MyCustomTheme" />
     <MudPopoverProvider @rendermode="InteractiveServer" />
     <MudSnackbarProvider @rendermode="InteractiveServer" />
     <MudDialogProvider @rendermode="InteractiveServer"
@@ -32,3 +32,13 @@
 </body>
 
 </html>
+
+@code{
+    MudTheme MyCustomTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = Colors.Indigo.Darken3,
+        },
+    };
+}

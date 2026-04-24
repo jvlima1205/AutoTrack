@@ -3,39 +3,51 @@
         <h3>Adicionar Véiculo ao Cliente</h3>
     </TitleContent>
     <DialogContent>
-        <MudForm Model="@form" Spacing="2" Class="d-flex flex-column">
+        <MudForm Model="@form">
+            <MudGrid Spacing="2">
 
-            <div class="d-flex flex-row">
-                <MudTextField Variant="Variant.Outlined" For="@(() => form.Name)" Label="Nome" @bind-Value="form.Name" ReadOnly="true" />
-            </div>
+                <MudItem xs="12">
+                    <MudTextField Variant="Variant.Outlined" For="@(() => form.Name)" Label="Nome" @bind-Value="form.Name"
+                                  ReadOnly="true" />
+                </MudItem>
 
-            <div class="d-flex flex-row gap-3">
-                <MudSelect T="int?" Variant="Variant.Outlined" Label="Marca" Value="@_idBrand" ValueChanged="OnChange" Required="true" RequiredError="Modelo obrigatório">
-                    @foreach (tVehicleBrand brand in _brands)
-                    {
-                        <MudSelectItem Value="@((int?)brand.IdVehicleBrand)">@brand.Brand</MudSelectItem>
-                    }
-                </MudSelect>
-
-                <MudSelect Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect" Required="true" RequiredError="Marca obrigatória">
-                    @if (_vehicles.Any())
-                        @foreach (tVehicle vehicle in _vehicles)
+                <MudItem xs="6">
+                    <MudSelect T="int?" Variant="Variant.Outlined" Label="Marca" Value="@_idBrand" ValueChanged="OnChange"
+                               Required="true" RequiredError="Modelo obrigatório">
+                        @foreach (tVehicleBrand brand in _brands)
                         {
-                            <MudSelectItem Value="@((int?)vehicle.IdVehicle)">@vehicle.Vehicle</MudSelectItem>
+                            <MudSelectItem Value="@((int?)brand.IdVehicleBrand)">@brand.Brand</MudSelectItem>
                         }
-                </MudSelect>
-            </div>
+                    </MudSelect>
+                </MudItem>
 
-            <div class="d-flex flex-row gap-3">
-                <MudTextField Variant="Variant.Outlined" For="@(() => form.Plate)" Label="Placa" @bind-Value="form.Plate" Required="true" RequiredError="Placa obrigatória" />
-            </div>
+                <MudItem xs="6">
+                    <MudSelect Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect"
+                               Required="true" RequiredError="Marca obrigatória">
+                        @if (_vehicles.Any())
+                            @foreach (tVehicle vehicle in _vehicles)
+                            {
+                                <MudSelectItem Value="@((int?)vehicle.IdVehicle)">@vehicle.Vehicle</MudSelectItem>
+                            }
+                    </MudSelect>
+                </MudItem>
 
-            <div class="d-flex flex-row gap-3">
-                <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearManufacture)" Label="Ano de Fabricação" @bind-Value="form.YearManufacture" Required="true" RequiredError="Ano de Fabricação obrigatório" />
+                <MudItem xs="12">
+                    <MudTextField Variant="Variant.Outlined" For="@(() => form.Plate)" Label="Placa" @bind-Value="form.Plate"
+                                  Required="true" RequiredError="Placa obrigatória" />
+                </MudItem>
 
-                <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearModel)" Label="Ano do Modelo" @bind-Value="form.YearModel" Required="true" RequiredError="Ano do Modelo obrigatório" />
-            </div>
+                <MudItem xs="6">
+                    <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearManufacture)" Label="Ano de Fabricação"
+                                     @bind-Value="form.YearManufacture" Required="true" RequiredError="Ano de Fabricação obrigatório" />
+                </MudItem>
 
+                <MudItem xs="6">
+                    <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearModel)" Label="Ano do Modelo"
+                                     @bind-Value="form.YearModel" Required="true" RequiredError="Ano do Modelo obrigatório" />
+                </MudItem>
+
+            </MudGrid>
         </MudForm>
     </DialogContent>
     <DialogActions>

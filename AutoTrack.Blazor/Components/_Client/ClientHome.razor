@@ -16,7 +16,9 @@
                   Items="@mudtable.Data"
                   Filter="@mudtable.Function"
                   Height="@mudtable.Height"
-                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem">
+                  RowsPerPage="@mudtable.RowsPerPage" @bind-SelectedItem="mudtable.SelectedItem"
+                  Bordered="true"
+                  Hover="true">
             <ColGroup>
                 <col />
                 <col />
@@ -45,9 +47,9 @@
                 <MudTd>@context.Contact</MudTd>
                 <MudTd>@context.ContactAux</MudTd>
                 <MudTd>
-                    <MudButton Href="@($"VehicleClient/Home/{context.IdClient}")" Variant="Variant.Outlined" Color="Color.Info">Veículos</MudButton>
-                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Outlined" Color="Color.Warning">Editar</MudButton>
-                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Outlined" Color="Color.Error">Deletar</MudButton>
+                    <MudButton Href="@($"VehicleClient/Home/{context.IdClient}")" Variant="Variant.Filled" Color="Color.Info">Veículos</MudButton>
+                    <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Filled" Color="Color.Warning">Editar</MudButton>
+                    <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Filled" Color="Color.Error">Deletar</MudButton>
                 </MudTd>
             </RowTemplate>
         </MudTable>
