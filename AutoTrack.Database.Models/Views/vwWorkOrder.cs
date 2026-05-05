@@ -11,7 +11,6 @@ public class vwWorkOrder
     public DateTime PromisedDate { get; set; }
     public DateTime CreatAt { get; set; }
 
-
     public int IdVehicleClient { get; set; }
     public int IdVehicle { get; set; }
     public string Vehicle { get; set; }

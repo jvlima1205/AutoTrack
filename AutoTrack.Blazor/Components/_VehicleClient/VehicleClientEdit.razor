@@ -23,12 +23,12 @@
                 </MudItem>
 
                 <MudItem xs="6">
-                    <MudSelect T="int" Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect"
+                    <MudSelect T="int?" Variant="Variant.Outlined" Label="Modelo" @bind-Value="@_idVehicle" Disabled="!_brandSelect"
                                Required="true" RequiredError="Nome obrigatório">
                         @if (_vehicles.Any())
                             @foreach (tVehicle vehicle in _vehicles)
                             {
-                                <MudSelectItem Value="vehicle.IdVehicle">@vehicle.Vehicle</MudSelectItem>
+                                <MudSelectItem  Value="@((int?)vehicle.IdVehicle)">@vehicle.Vehicle</MudSelectItem>
                             }
                     </MudSelect>
                 </MudItem>
@@ -71,7 +71,7 @@
 
     private bool _brandSelect = false;
 
-    private int _idVehicle = 0;
+    private int? _idVehicle = 0;
     private List<tVehicle> _vehicles { get; set; } = [];
 
     protected override async Task OnInitializedAsync()
@@ -81,6 +81,8 @@
 
         _idBrand = _brands.FirstOrDefault(x => x.IdVehicleBrand == form.IdVehicleBrand)!.IdVehicleBrand;
         await OnChange(_idBrand);
+
+        _idVehicle = form.IdVehicle;
     }
 
     private async Task OnChange(int idBrand)
@@ -88,9 +90,9 @@
         _idBrand = idBrand;
         _brandSelect = true;
 
+        _idVehicle = null;
+
         _vehicles = await DBAutoTrackContext.tVehicle.Where(x => x.IdVehicleBrand == idBrand).ToListAsync();
-        if (_vehicles.Any())
-            _idVehicle = _vehicles.First().IdVehicle;
  
         StateHasChanged();
     }
@@ -100,8 +102,8 @@
         tVehicleClient vehicleClient = DBAutoTrackContext.tVehicleClient.Find(form.IdVehicleClient)!;
         if (vehicleClient is null) Cancel();
 
-        if (vehicleClient!.IdVehicle != _idVehicle)
-            vehicleClient.IdVehicle = _idVehicle;
+        if (vehicleClient!.IdVehicle != _idVehicle && _idVehicle is not null)
+            vehicleClient.IdVehicle = (int)_idVehicle;
 
         if (vehicleClient.Plate != form.Plate)
             vehicleClient.Plate = form.Plate;

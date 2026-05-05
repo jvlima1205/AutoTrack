@@ -74,6 +74,7 @@
     protected override async Task OnInitializedAsync()
     {
         _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
+
         form.Plate = string.Empty;
         form.YearManufacture = 0;
         form.YearModel = 0;
@@ -83,6 +84,8 @@
     {
         _idBrand = idBrand;
         _brandSelect = true;
+
+        _idVehicle = null;
 
         _vehicles = await DBAutoTrackContext.tVehicle.Where(x => x.IdVehicleBrand == idBrand).ToListAsync();
 

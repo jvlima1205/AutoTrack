@@ -25,6 +25,7 @@
                 <col />
                 <col />
                 <col />
+                <col />
                 <col style="width: 20%;" />
             </ColGroup>
             <ToolBarContent>
@@ -42,6 +43,7 @@
                 <MudTh>Número</MudTh>
                 <MudTh>Status</MudTh>
                 <MudTh>Cliente</MudTh>
+                <MudTh>Veículo</MudTh>
                 <MudTh>Placa</MudTh>
                 <MudTh>Criado Em</MudTh>
                 <MudTh>Data Prometida</MudTh>
@@ -51,9 +53,10 @@
                 <MudTd>@context.Number</MudTd>
                 <MudTd>@context.Status</MudTd>
                 <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Vehicle</MudTd>
                 <MudTd>@context.Plate</MudTd>
-                <MudTd>@context.CreatAt</MudTd>
-                <MudTd>@context.PromisedDate</MudTd>
+                <MudTd>@FormatDate(context.CreatAt)</MudTd>
+                <MudTd>@FormatDate(context.PromisedDate)</MudTd>
                 <MudTd>
                     <MudButton OnClick="@(() => Edit(context))" Variant="Variant.Filled" Color="Color.Warning">Editar</MudButton>
                     <MudButton OnClick="@(() => Delete(context))" Variant="Variant.Filled" Color="Color.Error">Deletar</MudButton>
@@ -113,7 +116,7 @@
         {
             var parameters = new DialogParameters<WorkOrderEdit>
             {
-                { x => x.form, workOrder }
+                { x => x.vwWorkOrder, workOrder }
             };
 
             var dialog = await Dialog.ShowAsync<WorkOrderEdit>("EditWorkOrder", parameters);
@@ -153,6 +156,11 @@
         {
             Redirect.Error(ex);
         }
+    }
+
+    private string FormatDate(DateTime date)
+    {
+        return date.ToString("dd/MM/yyyy");
     }
 
 }
