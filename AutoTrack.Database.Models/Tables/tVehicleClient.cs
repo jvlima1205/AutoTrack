@@ -9,6 +9,7 @@ public class tVehicleClient
     public int IdVehicle { get; set; }
     public int IdClient { get; set; }
     public string Plate { get; set; } = string.Empty;
+    public string Renavan { get; set; } = string.Empty;
     public int YearManufacture { get; set; }
     public int YearModel { get; set; }
 

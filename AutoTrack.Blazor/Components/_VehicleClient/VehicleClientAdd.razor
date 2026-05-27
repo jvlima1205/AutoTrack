@@ -32,9 +32,17 @@
                     </MudSelect>
                 </MudItem>
 
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudTextField Variant="Variant.Outlined" For="@(() => form.Plate)" Label="Placa" @bind-Value="form.Plate"
                                   Required="true" RequiredError="Placa obrigatória" />
+                </MudItem>
+
+                <MudItem xs="6">
+                    @* <MudTextField Variant="Variant.Outlined" For="@(() => form.Renavan)" InputMode="InputMode.numeric" MaxLength="10" Label="Renavan" @bind-Value="form.Renavan"
+                                  Required="true" RequiredError="Renavan obrigatório" /> *@
+
+                    <MudNumericField Variant="Variant.Outlined" For="@(() => form.Renavan)" Label="Ano de Fabricação"
+                                     @bind-Value="form.Renavan" Required="true" RequiredError="Ano de Fabricação obrigatório" />
                 </MudItem>
 
                 <MudItem xs="6">
@@ -76,6 +84,7 @@
         _brands = await DBAutoTrackContext.tVehicleBrand.ToListAsync();
 
         form.Plate = string.Empty;
+        form.Renavan = string.Empty;
         form.YearManufacture = 0;
         form.YearModel = 0;
     }
@@ -99,6 +108,7 @@
             IdVehicle = (int)_idVehicle!,
             IdClient = form.IdClient,
             Plate = form.Plate,
+            Renavan = form.Renavan,
             YearManufacture = form.YearManufacture,
             YearModel = form.YearModel,
         };
@@ -107,6 +117,12 @@
         DBAutoTrackContext.SaveChanges();
 
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private IEnumerable<string> MaxCharacters(string ch)
+    {
+        if (!string.IsNullOrEmpty(ch) && 25 < ch?.Length)
+            yield return "Max 25 characters";
     }
 
     private void Cancel() => MudDialog.Cancel();

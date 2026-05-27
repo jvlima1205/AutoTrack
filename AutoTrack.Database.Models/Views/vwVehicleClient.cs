@@ -40,5 +40,6 @@ public class vwVehicleClient
     public int YearManufacture { get; set; }
 
     public int YearModel { get; set; }
+    public string Renavan { get; set; } = string.Empty;
 
 }

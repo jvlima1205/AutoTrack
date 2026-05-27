@@ -34,9 +34,14 @@
                 </MudItem>
 
 
-                <MudItem xs="12">
+                <MudItem xs="6">
                     <MudTextField Variant="Variant.Outlined" For="@(() => form.Plate)" Label="Placa" @bind-Value="form.Plate"
                                   Required="true" RequiredError="Placa obrigatória" />
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudTextField Variant="Variant.Outlined" For="@(() => form.Renavan)" Label="Renavan" @bind-Value="form.Renavan"
+                                  Required="true" RequiredError="Renavan obrigatório" />
                 </MudItem>
 
 
@@ -45,6 +50,7 @@
                                      @bind-Value="form.YearManufacture" Required="true" RequiredError="Ano de Fabricação obrigatório" />
                 </MudItem>
 
+               
                 <MudItem xs="6">
                     <MudNumericField Variant="Variant.Outlined" For="@(() => form.YearModel)" Label="Ano do Modelo"
                                      @bind-Value="form.YearModel" Required="true" RequiredError="Ano do Modelo obrigatório" />
@@ -107,6 +113,10 @@
 
         if (vehicleClient.Plate != form.Plate)
             vehicleClient.Plate = form.Plate;
+
+        if (vehicleClient.Renavan != form.Renavan)
+            vehicleClient.Renavan = form.Renavan;
+
 
         if (vehicleClient.YearManufacture != form.YearManufacture)
             vehicleClient.YearManufacture = form.YearManufacture;
