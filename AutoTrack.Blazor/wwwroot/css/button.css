@@ -1,0 +1,43 @@
+﻿/* 1. BOTÃO CANCELAR (Aplica em todos os primeiros botões de qualquer diálogo) */
+.mud-dialog-actions .mud-button-root:first-child {
+    color: #475569 !important;
+    font-weight: 600 !important;
+}
+
+    .mud-dialog-actions .mud-button-root:first-child:hover {
+        background-color: #F1F5F9 !important;
+    }
+
+/* 2. BOTÃO DE CONFIRMAÇÃO VERDE (Adicionar / Salvar Alterações) */
+.mud-dialog-actions .mud-button-filled-success {
+    background-color: #059669 !important;
+    color: #FFFFFF !important;
+}
+
+    .mud-dialog-actions .mud-button-filled-success:hover {
+        background-color: #036e4d !important; 
+    }
+
+/* 3. BOTÃO DE CONFIRMAÇÃO VERMELHO (Deletar) */
+.mud-dialog-actions .mud-button-filled-error {
+    background-color: #f44336 !important;
+    color: #FFFFFF !important; 
+}
+
+    .mud-dialog-actions .mud-button-filled-error:hover {
+        background-color: #a63535 !important;
+    }
+
+
+/* o botão "Adicionar ..." Pricipal das páginas */
+section .mud-button-filled-success {
+    background-color: #059669 !important; 
+    color: #FFFFFF !important; 
+    font-weight: 900 !important; 
+    padding: 10px 20px !important; 
+}
+
+    /* Efeito ao passar o mouse por cima (Hover) do botão adicionar */
+    section .mud-button-filled-success:hover {
+        background-color: #036e4d !important; 
+    }

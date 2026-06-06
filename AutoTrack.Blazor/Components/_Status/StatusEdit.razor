@@ -1,4 +1,5 @@
-﻿<MudDialog TitleClass="bg-warning text-white" ContentClass="py-5">
+﻿@inject NavigationManager NavigationManager
+<MudDialog TitleClass="bg-warning text-white" ContentClass="py-5">
     <TitleContent>
         <h3>Editar Status</h3>
     </TitleContent>
@@ -8,7 +9,7 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Salvar Alterações</MudButton>
     </DialogActions>
 </MudDialog>
@@ -36,5 +37,12 @@
         MudDialog.Close(DialogResult.Ok(true));
     }
 
-    private void Cancel() => MudDialog.Cancel();
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+
+        // Força a página a recarregar do zero e limpa o visual
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
+
 }

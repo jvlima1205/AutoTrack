@@ -7,12 +7,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\_Main\Layout\NavMenu.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\_Main\Layout\NavMenu.razor.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MudBlazor" Version="8.15.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AutoTrack.CrossCutting\AutoTrack.CrossCutting.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\tabela.css" />
   </ItemGroup>
 
 </Project>

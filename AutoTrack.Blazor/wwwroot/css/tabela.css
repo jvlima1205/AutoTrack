@@ -1,0 +1,46 @@
+﻿
+/* Altera todas as linhas de dados da tabela */
+.mud-table-row {
+    background-color: #ffffff !important;
+    color: #1e293b !important; 
+}
+
+/* Altera a linha do cabeçalho */
+.mud-table-head .mud-table-row {
+    background-color: #000308 !important;
+}
+
+/* Altera o texto dos títulos dentro do cabeçalho */
+.mud-table-head .mud-table-cell {
+    color: #000308 !important;
+    font-weight: bold !important;
+}
+
+/* Altera APENAS as células do cabeçalho (MudTh) */
+.mud-table-head th {
+    background-color: #e2e8f0 !important;
+    color: #e2e8f0 !important;
+    font-weight: 700 !important;
+}
+
+/* 1. AUMENTAR A SOMBRA DA TABELA */
+section .mud-table {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important; 
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    border: 1px solid #E2E8F0 !important; 
+}
+
+/* 2. DETALHAR A LINHA DO CABEÇALHO */
+section .mud-table-head th {
+    color: #1E293B !important;
+    font-weight: 700 !important;
+    background-color: #F8FAFC !important;
+    border-bottom: 2px solid #CBD5E1 !important; 
+}
+
+/* 3. DETALHAR AS LINHAS DO CORPO (DADOS) */
+section .mud-table-body .mud-table-cell {
+    border-bottom: 1px solid #E2E8F0 !important; 
+    padding: 14px 16px !important;
+}
