@@ -1,0 +1,161 @@
+﻿@page "/Sobre/Home"
+@rendermode InteractiveServer
+
+<style>
+    .titulo-autotrack {
+        position: relative;
+        display: inline-block;
+        text-decoration: none;
+        cursor: default;
+    }
+
+        /* Linha base: Sólida e visível por padrão */
+        .titulo-autotrack::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 3px;
+            background-color: #212529; /* Cor idêntica ao fundo do cartão Desenvolvedores */
+            border-bottom: 0px solid transparent;
+            transition: all 0.3s ease-in-out;
+        }
+
+    /* Efeito Hover: A linha sólida se transforma em uma linha tracejada (dashed) com animação */
+    .cabecalho-sobre:hover .titulo-autotrack::after {
+        background-color: transparent; /* Remove o fundo sólido */
+        height: 0px;
+        border-bottom: 3px dashed #212529; /* Transforma em tracejado */
+    }
+
+    /* Classe unificada para o texto claro das caixas de tecnologia */
+    .texto-tecnologia-claro {
+        color: #F8FAFC !important; /* Branco Gelo: elegante, legível e idêntico para as 3 caixas */
+        text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15); /* Sutil sombra para destacar ainda mais o texto */
+    }
+</style>
+
+<section class="d-flex flex-column gap-4 p-3">
+
+    <div class="pb-2 cabecalho-sobre" style="border-bottom: 2px solid #E2E8F0;">
+        <h3 class="display-6 fw-bold mb-1" style="color: rgb(5, 39, 103);">
+            Sobre o <span class="titulo-autotrack">AutoTrack</span>
+        </h3>
+        <p class="text-muted">Conheça o sistema e a equipe por trás do gerenciamento automotivo.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-lg-7">
+            <div class="card h-100 shadow border-0" style="background-color: #E2E8F0;">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-3 text-dark">
+                        ℹ️ O que é o Sistema?
+                    </h5>
+                    <p class="card-text text-dark lh-lg">
+                        O <strong>AutoTrack</strong> é uma plataforma web interativa desenvolvida para centralizar,
+                        simplificar e automatizar o controle de manutenções veiculares. Nosso objetivo principal é
+                        mitigar a assimetria de informação, ajudando condutores a monitorar prazos críticos de revisões,
+                        trocas de óleo e componentes por quilometragem (odômetro) ou tempo.
+                    </p>
+                    <p class="card-text text-dark lh-lg">
+                        Através de uma interface dinâmica, o sistema transforma dados brutos em controle preventivo,
+                        evitando falhas mecânicas inesperadas e otimizando o custo de conservação do veículo.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <div class="card h-100 shadow-sm border-0 text-white bg-dark">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold text-warning mb-3">
+                        👥 Desenvolvedores
+                    </h5>
+                    <p class="small text-white-50 mb-4">Mentes por trás da arquitetura e construção do software:</p>
+
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3 border-bottom border-secondary pb-2">
+                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <span class="fw-bold text-white">JL</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">João Victor de Lima</h6>
+                                <small class="text-white-50">💻 Desenvolvedor de Software</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <span class="fw-bold text-white">EJ</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Ernst Herbert Janowsky Junior</h6>
+                                <small class="text-white-50">💻 Desenvolvedor de Software</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold text-dark mb-4">
+                        🛠️ Tecnologias e Engenharia de Software
+                    </h5>
+
+                    <div class="row row-cols-1 row-cols-md-3 g-3">
+                        <div class="col">
+                            <div class="p-3 border rounded h-100" style="border-color: #E2E8F0 !important;">
+                                <span class="badge px-3 py-2 mb-2 texto-tecnologia-claro" style="background-color: rgb(5, 39, 103);">Frontend / Backend</span>
+                                <h6 class="fw-bold mb-1 mt-2">Blazor Server</h6>
+                                <p class="small text-muted mb-0">Interface rica e reativa em tempo real via WebSockets (SignalR) com execução em .NET.</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-3 border rounded h-100" style="border-color: #E2E8F0 !important;">
+                                <span class="badge px-3 py-2 mb-2 texto-tecnologia-claro" style="background-color: #059669;">Persistência</span>
+                                <h6 class="fw-bold mb-1 mt-2">Entity Framework Core</h6>
+                                <p class="small text-muted mb-0">Mapeamento objeto-relacional (ORM) para comunicação assíncrona robusta com o Banco de Dados.</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-3 border rounded h-100" style="border-color: #E2E8F0 !important;">
+                                <span class="badge px-3 py-2 mb-2 texto-tecnologia-claro" style="background-color: var(--mud-palette-warning);">Interface de Usuário</span>
+                                <h6 class="fw-bold mb-1 mt-2">MudBlazor & Bootstrap 5</h6>
+                                <p class="small text-muted mb-0">Componentes de tabela avançados combinados com os estilos globais e responsivos do Bootstrap.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@code {
+
+    private MudtableFunction<tStatus> mudtable = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    private async Task UpdateData()
+    {
+        try
+        {
+            mudtable.Data = await DBAutoTrackContext.tStatus.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Redirect.Error(ex);
+        }
+    }
+
+}
