@@ -14,18 +14,7 @@ public class DBAutoTrackContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        configFile = new("DBAutoTrack");
-
-        connectionSettings = new ConnectionSettings
-        {
-            Server = configFile["Server"].ToString(),
-            Database = configFile["Database"].ToString(),
-            User_Id = configFile["User_Id"].ToString(),
-            Password = configFile["Password"].ToString(),
-        };
-
-        string text = connectionSettings.ConnectionFor_SQLServer();
-        optionsBuilder.UseSqlServer(text);
+        optionsBuilder.UseSqlServer("Data Source=SQL1002.site4now.net;Initial Catalog=db_acad1a_dbautotrack;User Id=db_acad1a_dbautotrack_admin;Password=Ie022psbjv@;Encrypt=True;TrustServerCertificate=True;");
     }
 
     public DbSet<tVehicle> tVehicle { get; set; }
